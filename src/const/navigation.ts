@@ -1,8 +1,15 @@
+import {
+  homeIcon,
+  fileIcon,
+  inboxIcon,
+  layerIcon,
+  trashIcon,
+} from "../assets/icons/icons.tsx";
+
 export const navItems = [
-  { path: "/", label: "Home", icon: "🏠" },
-  { path: "/templates", label: "Templates", icon: "📋" },
-  { path: "/create-form", label: "Create Form", icon: "➕" },
-  { path: "/my-forms", label: "My Forms", icon: "📁" },
-  { path: "/draft", label: "Draft", icon: "⚙️" },
-  { path: "/trash", label: "Transh", icon: "👤" },
+  { path: "/", label: "Home", icon: homeIcon },
+  { path: "/templates", label: "Templates", icon: fileIcon },
+  { path: "/my-forms", label: "My Forms", icon: inboxIcon },
+  { path: "/draft", label: "Draft", icon: layerIcon },
+  { path: "/trash", label: "Transh", icon: trashIcon },
 ];

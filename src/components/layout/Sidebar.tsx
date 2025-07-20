@@ -77,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
                   }
                 `}
               >
-                <span className="mr-3 text-lg">{item.icon}</span>
+                <span className="mr-3 text-lg">{item.icon({ isActive: isActive(item.path) })}</span>
                 {item.label}
               </Link>
             ))}

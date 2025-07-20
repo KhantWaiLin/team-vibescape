@@ -6,9 +6,12 @@ import LoadingSpinner from "../components/LoadingSpinner";
 // Lazy load components
 const Home = React.lazy(() => import("../pages/Home"));
 const Dashboard = React.lazy(() => import("../pages/Dashboard"));
-const CreateForm = React.lazy(() => import("../pages/CreateForm"));
 const Login = React.lazy(() => import("../pages/auth/Login"));
 const NotFound = React.lazy(() => import("../pages/NotFound"));
+const Draft = React.lazy(() => import("../pages/Draft"));
+const Trash = React.lazy(() => import("../pages/Trash"));
+const MyForm = React.lazy(() => import("../pages/MyForm"));
+const Templates = React.lazy(() => import("../pages/Templates"));
 
 // Define the route configuration
 export const routes: RouteObject[] = [
@@ -41,28 +44,21 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: "/create-form",
+    path: "/my-form",
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <CreateForm />
+          <MyForm />
         </Suspense>
       </Layout>
     ),
   },
   {
-    path: "/browse-forms",
+    path: "/templates",
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Browse Forms
-            </h1>
-            <p className="text-gray-600">
-              This page will show all available forms.
-            </p>
-          </div>
+          <Templates />
         </Suspense>
       </Layout>
     ),
@@ -83,31 +79,21 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: "/admin",
+    path: "/draft",
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Admin Panel
-            </h1>
-            <p className="text-gray-600">This page will show admin controls.</p>
-          </div>
+          <Draft />
         </Suspense>
       </Layout>
     ),
   },
   {
-    path: "/profile",
+    path: "/trash",
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile</h1>
-            <p className="text-gray-600">
-              This page will show user profile information.
-            </p>
-          </div>
+          <Trash />
         </Suspense>
       </Layout>
     ),
