@@ -12,6 +12,7 @@ const Draft = React.lazy(() => import("../pages/Draft"));
 const Trash = React.lazy(() => import("../pages/Trash"));
 const MyForm = React.lazy(() => import("../pages/MyForm"));
 const Templates = React.lazy(() => import("../pages/Templates"));
+const CreateForm = React.lazy(() => import("../pages/CreateForm"));
 
 // Define the route configuration
 export const routes: RouteObject[] = [
@@ -96,6 +97,14 @@ export const routes: RouteObject[] = [
           <Trash />
         </Suspense>
       </Layout>
+    ),
+  },
+  {
+    path: "/create-form",
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <CreateForm />
+      </Suspense>
     ),
   },
   {
