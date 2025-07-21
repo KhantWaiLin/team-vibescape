@@ -1,5 +1,5 @@
 import React from "react";
-import SearchIcon from "../assets/icons/search.svg";
+import { searchIcon } from "../assets/icons/icons";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -18,7 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         className={`pl-4 pr-4 py-2 border bg-gray-100 border-gray-300 rounded-lg focus:ring-2 placeholder:text-gray-400 focus:ring-green-500 focus:border-green-500 ${className}`}
       />
       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-        <img src={SearchIcon} alt="search" className="w-5 h-5" />
+        <img src={searchIcon} alt="search" className="w-5 h-5" />
       </div>
     </div>
   );

@@ -1,4 +1,19 @@
-export const trashIcon = ({ isActive = false }: { isActive?: boolean }) => {
+import typeIcon from "./type.svg";
+import paragraphIcon from "./paragraph.svg";
+import radioIcon from "./check-circle.svg";
+import checkboxIcon from "./check-square.svg";
+import dropdownIcon from "./chevron-down.svg";
+import dateIcon from "./calendar.svg";
+import numberIcon from "./hash.svg";
+import emailIcon from "./email.svg";
+import timeIcon from "./clock.svg";
+import fileUploadIcon from "./cloud upload.svg";
+import pinIcon from "./pin.svg";
+import dividerIcon from "./divider.svg";
+import searchIcon from "./search.svg";
+
+
+const trashIcon = ({ isActive = false }: { isActive?: boolean }) => {
   return (
     <svg
       width="24"
@@ -18,7 +33,7 @@ export const trashIcon = ({ isActive = false }: { isActive?: boolean }) => {
   );
 };
 
-export const fileIcon = ({ isActive = false }: { isActive?: boolean }) => {
+const fileIcon = ({ isActive = false }: { isActive?: boolean }) => {
   return (
     <svg
       width="24"
@@ -35,7 +50,7 @@ export const fileIcon = ({ isActive = false }: { isActive?: boolean }) => {
   );
 };
 
-export const inboxIcon = ({ isActive = false }: { isActive?: boolean }) => {
+const inboxIcon = ({ isActive = false }: { isActive?: boolean }) => {
   return (
     <svg
       width="24"
@@ -53,7 +68,7 @@ export const inboxIcon = ({ isActive = false }: { isActive?: boolean }) => {
   );
 };
 
-export const layerIcon = ({ isActive = false }: { isActive?: boolean }) => {
+const layerIcon = ({ isActive = false }: { isActive?: boolean }) => {
   return (
     <svg
       width="24"
@@ -73,7 +88,7 @@ export const layerIcon = ({ isActive = false }: { isActive?: boolean }) => {
   );
 };
 
-export const homeIcon = ({ isActive = false }: { isActive?: boolean }) => {
+const homeIcon = ({ isActive = false }: { isActive?: boolean }) => {
   return (
     <svg
       width="24"
@@ -96,35 +111,15 @@ export const homeIcon = ({ isActive = false }: { isActive?: boolean }) => {
           y2="12.25"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#006738" />
-          <stop offset="1" stopColor="#007A43" />
+          <stop stopColor={isActive ? "#006738" : "#5D6F67"} />
+          <stop offset="1" stopColor={isActive ? "#007A43" : "#5D6F67"} />
         </linearGradient>
       </defs>
     </svg>
   );
 };
 
-export const searchIcon = ({ isActive = false }: { isActive?: boolean }) => {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M16.8603 17L12.9936 13.1333M15.0826 8.11111C15.0826 12.0385 11.8988 15.2222 7.97146 15.2222C4.0441 15.2222 0.860352 12.0385 0.860352 8.11111C0.860352 4.18375 4.0441 1 7.97146 1C11.8988 1 15.0826 4.18375 15.0826 8.11111Z"
-        stroke={isActive ? "#006738" : "#A3A3A3"}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
-
-export const floatingButtonIcon = () => {
+const floatingButtonIcon = () => {
   return (
     <svg
       width="100"
@@ -388,4 +383,27 @@ export const floatingButtonIcon = () => {
       </defs>
     </svg>
   );
+};
+
+// Export all imported icons
+export {
+  typeIcon,
+  paragraphIcon,
+  radioIcon,
+  checkboxIcon,
+  dropdownIcon,
+  dateIcon,
+  numberIcon,
+  emailIcon,
+  timeIcon,
+  fileUploadIcon,
+  pinIcon,
+  dividerIcon,
+  searchIcon,
+  trashIcon,
+  fileIcon,
+  inboxIcon,
+  layerIcon,
+  homeIcon,
+  floatingButtonIcon,
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { navItems } from "../../const/navigation";
+import { navItems } from "../../const/const";
 import { Link, useLocation } from "react-router-dom";
 
 interface SidebarProps {

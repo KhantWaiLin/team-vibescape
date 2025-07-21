@@ -1,4 +1,4 @@
-import DynamicForm from "../components/DynamicForm";
+import { FormCreateLayout } from "../components/layout";
 
 // Replace this with your actual data fetching logic
 const mockFormData = {
@@ -66,9 +66,21 @@ const mockFormData = {
 
 const CreateForm = () => {
   return (
-    <div>
-      <DynamicForm form={mockFormData} />
-    </div>
+    <FormCreateLayout>
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Form Builder</h2>
+          <p className="text-gray-600 mb-8">This is where the form builder content will go. The layout now has two sidebars and a header!</p>
+          
+          {/* Placeholder for form builder content */}
+          <div className="space-y-4">
+            <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg text-center">
+              <p className="text-gray-500">Drag and drop questions here or click the buttons in the left sidebar</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </FormCreateLayout>
   );
 };
 
