@@ -5,11 +5,19 @@ import { layoutBlocks, questionsTypes } from "../const/const";
 interface FormBuilderSidebarProps {
   isOpen: boolean;
   onAddQuestion: (questionType: string) => void;
+  formTitle: string;
+  formDescription: string;
+  onFormTitleChange: (title: string) => void;
+  onFormDescriptionChange: (description: string) => void;
 }
 
 const FormBuilderSidebar: React.FC<FormBuilderSidebarProps> = ({
   isOpen,
   onAddQuestion,
+  formTitle,
+  formDescription,
+  onFormTitleChange,
+  onFormDescriptionChange,
 }) => {
   return (
     <div
@@ -19,14 +27,28 @@ const FormBuilderSidebar: React.FC<FormBuilderSidebarProps> = ({
     >
       <div className="w-64 bg-white shadow-lg border-r border-gray-200 h-full overflow-y-auto">
         <div className="p-4">
-          <div className="mb-6">
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Form Title
             </label>
             <input
               type="text"
+              value={formTitle}
+              onChange={(e) => onFormTitleChange(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter form title"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Form Description
+            </label>
+            <textarea
+              value={formDescription}
+              onChange={(e) => onFormDescriptionChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              placeholder="Enter form description (optional)"
+              rows={3}
             />
           </div>
           <div className="border-b border-gray-200 mb-6"></div>

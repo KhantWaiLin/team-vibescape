@@ -1,10 +1,6 @@
 import React from "react";
 import { searchIcon } from "../assets/icons/icons";
-
-interface SearchBarProps {
-  placeholder?: string;
-  className?: string;
-}
+import type { SearchBarProps } from "../types";
 
 const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Search...",

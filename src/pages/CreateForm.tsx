@@ -1,7 +1,10 @@
 import { FormCreateLayout } from "../components/layout";
+import { FormBuilder } from "../components";
+import { useState } from "react";
+import type { Question, FormData } from "../types";
 
 // Replace this with your actual data fetching logic
-const mockFormData = {
+const mockFormData: FormData = {
   title: "Sample Form 2",
   description: "This is sample form number 2.",
   questions: [
@@ -65,19 +68,43 @@ const mockFormData = {
 };
 
 const CreateForm = () => {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
+    null
+  );
+  const [formTitle, setFormTitle] = useState<string>("Untitled Form");
+  const [formDescription, setFormDescription] = useState<string>("");
+
+  const handleQuestionsChange = (newQuestions: Question[]) => {
+    setQuestions(newQuestions);
+  };
+
+  const handleQuestionSelect = (question: Question | null) => {
+    setSelectedQuestion(question);
+  };
+
   return (
-    <FormCreateLayout>
+    <FormCreateLayout
+      questions={questions}
+      onQuestionsChange={handleQuestionsChange}
+      selectedQuestion={selectedQuestion}
+      onQuestionSelect={handleQuestionSelect}
+      formTitle={formTitle}
+      formDescription={formDescription}
+      onFormTitleChange={setFormTitle}
+      onFormDescriptionChange={setFormDescription}
+    >
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Form Builder</h2>
-          <p className="text-gray-600 mb-8">This is where the form builder content will go. The layout now has two sidebars and a header!</p>
-          
-          {/* Placeholder for form builder content */}
-          <div className="space-y-4">
-            <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg text-center">
-              <p className="text-gray-500">Drag and drop questions here or click the buttons in the left sidebar</p>
-            </div>
-          </div>
+          {/* Form Builder Component */}
+          <FormBuilder
+            questions={questions}
+            onQuestionsChange={handleQuestionsChange}
+            selectedQuestion={selectedQuestion}
+            onQuestionSelect={handleQuestionSelect}
+            formTitle={formTitle}
+            formDescription={formDescription}
+          />
         </div>
       </div>
     </FormCreateLayout>

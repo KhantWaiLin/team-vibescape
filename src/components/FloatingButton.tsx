@@ -1,14 +1,6 @@
 import React from "react";
 import { floatingButtonIcon } from "../assets/icons/icons";
-
-interface FloatingButtonProps {
-  icon?: React.ReactNode;
-  text?: string;
-  onClick?: () => void;
-  className?: string;
-  size?: "sm" | "md" | "lg";
-  variant?: "primary" | "secondary" | "success" | "warning" | "danger";
-}
+import type { FloatingButtonProps } from "../types";
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({
   icon = floatingButtonIcon(),

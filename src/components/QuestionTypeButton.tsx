@@ -1,12 +1,5 @@
 import React from 'react';
-
-interface QuestionTypeButtonProps {
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-  variant?: 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'gray';
-  disabled?: boolean;
-}
+import type { QuestionTypeButtonProps } from '../types';
 
 const QuestionTypeButton: React.FC<QuestionTypeButtonProps> = ({
   icon,

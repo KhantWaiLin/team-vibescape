@@ -3,4 +3,7 @@ export { default as SearchBar } from './SearchBar';
 export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as FloatingButton } from './FloatingButton';
 export { default as QuestionTypeButton } from './QuestionTypeButton';
-export { default as FormBuilderSidebar } from './FormBuilderSidebar'; 
+export { default as FormBuilderSidebar } from './FormBuilderSidebar';
+export { default as FormBuilder } from './FormBuilder';
+export { default as FormSettingsSidebar } from './FormSettingsSidebar';
+export { default as FormHeader } from './FormHeader'; 
