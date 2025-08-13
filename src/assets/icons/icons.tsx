@@ -7,10 +7,13 @@ import dateIcon from "./calendar.svg";
 import numberIcon from "./hash.svg";
 import emailIcon from "./email.svg";
 import timeIcon from "./clock.svg";
-import fileUploadIcon from "./cloud upload.svg";
+import fileUploadIcon from "./cloud_upload.svg";
 import pinIcon from "./pin.svg";
 import dividerIcon from "./divider.svg";
 import searchIcon from "./search.svg";
+import requireIcon from "./require.svg";
+import userGroupIcon from "./user-group.svg";
+import eyeIcon from "./eye.svg";
 
 
 const trashIcon = ({ isActive = false }: { isActive?: boolean }) => {
@@ -400,6 +403,9 @@ export {
   pinIcon,
   dividerIcon,
   searchIcon,
+  requireIcon,
+  userGroupIcon,
+  eyeIcon,
   trashIcon,
   fileIcon,
   inboxIcon,

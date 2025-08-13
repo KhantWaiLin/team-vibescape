@@ -19,7 +19,7 @@ type FormData = {
 const TextInput = ({ q, register, error }: any) => (
   <input
     type="text"
-    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-green-400 focus:border-green-600 bg-green-50 border-green-300 text-green-900 placeholder-green-400 ${error ? 'border-red-500' : ''}`}
+    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-600)] bg-[var(--color-green-50)] border-[var(--color-green-300)] text-[var(--color-green-900)] placeholder-[var(--color-green-600)] ${error ? 'border-red-500' : ''}`}
     placeholder="Enter your answer"
     {...register(`question_${q.id}`, { required: !!q.is_required })}
   />
@@ -27,7 +27,7 @@ const TextInput = ({ q, register, error }: any) => (
 
 const ParagraphInput = ({ q, register, error }: any) => (
   <textarea
-    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-green-400 focus:border-green-600 bg-green-50 border-green-300 text-green-900 placeholder-green-400 ${error ? 'border-red-500' : ''}`}
+    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-600)] bg-[var(--color-green-50)] border-[var(--color-green-300)] text-[var(--color-green-900)] placeholder-[var(--color-green-600)] ${error ? 'border-red-500' : ''}`}
     placeholder="Enter your answer"
     rows={4}
     {...register(`question_${q.id}`, { required: !!q.is_required })}
@@ -36,7 +36,7 @@ const ParagraphInput = ({ q, register, error }: any) => (
 
 const DropdownInput = ({ q, register, error }: any) => (
   <select
-    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-green-400 focus:border-green-600 bg-green-50 border-green-300 text-green-900 ${error ? 'border-red-500' : ''}`}
+    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-600)] bg-[var(--color-green-50)] border-[var(--color-green-300)] text-[var(--color-green-900)] ${error ? 'border-red-500' : ''}`}
     {...register(`question_${q.id}`, { required: !!q.is_required })}
   >
     <option value="">Select...</option>
@@ -50,7 +50,7 @@ const DropdownInput = ({ q, register, error }: any) => (
 const DateTimeInput = ({ q, register, error }: any) => (
   <input
     type="datetime-local"
-    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-green-400 focus:border-green-600 bg-green-50 border-green-300 text-green-900 ${error ? 'border-red-500' : ''}`}
+    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-600)] bg-[var(--color-green-50)] border-[var(--color-green-300)] text-[var(--color-green-900)] ${error ? 'border-red-500' : ''}`}
     {...register(`question_${q.id}`, { required: !!q.is_required })}
   />
 );
@@ -59,11 +59,11 @@ const RadioGroup = ({ q, register, error }: any) => (
   <div className="flex flex-col gap-2 mt-1">
     {q.options &&
       JSON.parse(q.options).map((opt: string, idx: number) => (
-        <label key={idx} className="inline-flex items-center text-green-800 font-medium">
+        <label key={idx} className="inline-flex items-center text-[var(--color-green-800)] font-medium">
           <input
             type="radio"
             value={opt}
-            className="form-radio text-green-600 focus:ring-green-400 mr-2"
+            className="form-radio text-[var(--color-green-600)] focus:ring-[var(--color-green-500)] mr-2"
             {...register(`question_${q.id}`, { required: !!q.is_required })}
           />
           {opt}
@@ -76,11 +76,11 @@ const CheckboxGroup = ({ q, register, error }: any) => (
   <div className="flex flex-col gap-2 mt-1">
     {q.options &&
       JSON.parse(q.options).map((opt: string, idx: number) => (
-        <label key={idx} className="inline-flex items-center text-green-800 font-medium">
+        <label key={idx} className="inline-flex items-center text-[var(--color-green-800)] font-medium">
           <input
             type="checkbox"
             value={opt}
-            className="form-checkbox text-green-600 focus:ring-green-400 mr-2"
+            className="form-checkbox text-[var(--color-green-600)] focus:ring-[var(--color-green-500)] mr-2"
             {...register(`question_${q.id}`, { required: !!q.is_required })}
           />
           {opt}
@@ -95,7 +95,7 @@ const RatingInput = ({ q, register, error }: any) => (
     min={1}
     max={5}
     placeholder="Rate 1-5"
-    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-green-400 focus:border-green-600 bg-green-50 border-green-300 text-green-900 placeholder-green-400 ${error ? 'border-red-500' : ''}`}
+    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-600)] bg-[var(--color-green-50)] border-[var(--color-green-300)] text-[var(--color-green-900)] placeholder-[var(--color-green-600)] ${error ? 'border-red-500' : ''}`}
     {...register(`question_${q.id}`, { required: !!q.is_required, min: 1, max: 5 })}
   />
 );
@@ -103,7 +103,7 @@ const RatingInput = ({ q, register, error }: any) => (
 const FileInput = ({ q, register, error }: any) => (
   <input
     type="file"
-    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-green-400 focus:border-green-600 bg-green-50 border-green-300 text-green-900 ${error ? 'border-red-500' : ''}`}
+    className={`mt-1 block w-full rounded-md border focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-600)] bg-[var(--color-green-50)] border-[var(--color-green-300)] text-[var(--color-green-900)] ${error ? 'border-red-500' : ''}`}
     {...register(`question_${q.id}`, { required: !!q.is_required })}
   />
 );
@@ -139,10 +139,10 @@ const QuestionBlock = ({ q, register, error }: any) => {
       inputComponent = null;
   }
   return (
-    <div className="bg-white border border-green-200 rounded-xl shadow p-6 mb-6">
-      <label className="block text-green-900 font-semibold mb-1">
+    <div className="bg-[var(--color-light-card)] border border-[var(--color-green-200)] rounded-xl shadow p-6 mb-6">
+      <label className="block text-[var(--color-green-900)] font-semibold mb-1">
         {q.question_text}
-        {q.is_required ? <span className="text-green-600 ml-1">*</span> : null}
+        {q.is_required ? <span className="text-[var(--color-green-600)] ml-1">*</span> : null}
       </label>
       {inputComponent}
       {error && (
@@ -165,15 +165,15 @@ const DynamicForm: React.FC<{ form: FormData }> = ({ form }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg border border-green-200 p-8 mt-10 mb-10">
-      <h2 className="text-3xl font-bold text-green-800 mb-2 text-center">{form.title}</h2>
-      <p className="text-green-700 mb-8 text-center">{form.description}</p>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto bg-[var(--color-light-card)] rounded-2xl shadow-lg border border-[var(--color-green-200)] p-8 mt-10 mb-10">
+      <h2 className="text-3xl font-bold text-[var(--color-green-800)] mb-2 text-center">{form.title}</h2>
+      <p className="text-[var(--color-green-700)] mb-8 text-center">{form.description}</p>
       {sortedQuestions.map((q) => (
         <QuestionBlock key={q.id} q={q} register={register} error={errors[`question_${q.id}`]} />
       ))}
       <button
         type="submit"
-        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors duration-200 mt-4 shadow-md text-lg"
+        className="w-full bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-[var(--color-light-text-inverse)] font-bold py-3 rounded-lg transition-colors duration-200 mt-4 shadow-md text-lg"
       >
         Submit
       </button>

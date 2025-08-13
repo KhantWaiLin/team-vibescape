@@ -30,11 +30,11 @@ const Login = () => {
           <div className="mb-6">
             <div className="flex flex-col justify-start items-start gap-6 mb-3">
               <img src={StarImage} alt="star-image" className="w-10 h-10" />
-              <h2 className="text-3xl m-0 font-[700] font-satoshi text-gray-900">
+              <h2 className="text-3xl m-0 font-[700] font-satoshi text-[var(--color-black-900)]">
                 Welcome back!
               </h2>
             </div>
-            <p className="text-gray-400 font-[400] text-[14px]">
+            <p className="text-[var(--color-black-500)] font-[400] text-[14px]">
               Get started with the simplest way to create forms.
             </p>
           </div>
@@ -42,7 +42,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-[var(--color-black-700)] mb-2"
               >
                 Email
               </label>
@@ -54,14 +54,14 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)]"
                 placeholder="Enter your email"
               />
             </div>
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-[var(--color-black-700)] mb-2"
               >
                 Password
               </label>
@@ -73,7 +73,7 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)]"
                 placeholder="Enter your password"
               />
             </div>
@@ -83,11 +83,11 @@ const Login = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 primar focus:ring-green-500 border-gray-300 rounded"
+                  className="h-4 w-4 focus:ring-[var(--color-green-500)] border-[var(--color-black-300)] rounded"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block font-[300] text-sm text-gray-700"
+                  className="ml-2 block font-[300] text-sm text-[var(--color-black-700)]"
                 >
                   Remember me
                 </label>
@@ -95,7 +95,7 @@ const Login = () => {
               <div className="text-sm">
                 <button
                   type="button"
-                  className="text-[12px] font-[400] text-primary hover:text-primary-hover"
+                  className="text-[12px] font-[400] text-[var(--color-green-600)] hover:text-[var(--color-green-700)]"
                 >
                   Forgot password?
                 </button>
@@ -103,7 +103,7 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-primary-hover cursor-pointer text-white font-[700] text-[14px] py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              className="w-full bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] cursor-pointer text-[var(--color-light-text-inverse)] font-[700] text-[14px] py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-green-500)] focus:ring-offset-2"
             >
               Log in
             </button>

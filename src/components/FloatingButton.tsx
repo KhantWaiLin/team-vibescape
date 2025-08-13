@@ -18,14 +18,14 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
 
   const variantClasses = {
     primary:
-      "bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl",
+      "bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-[var(--color-light-text-inverse)] shadow-lg hover:shadow-xl",
     secondary:
-      "bg-gray-600 hover:bg-gray-700 text-white shadow-lg hover:shadow-xl",
+      "bg-[var(--color-black-500)] hover:bg-[var(--color-black-600)] text-[var(--color-light-text-inverse)] shadow-lg hover:shadow-xl",
     success:
-      "bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl",
+      "bg-[var(--color-green-500)] hover:bg-[var(--color-green-600)] text-[var(--color-light-text-inverse)] shadow-lg hover:shadow-xl",
     warning:
-      "bg-yellow-500 hover:bg-yellow-600 text-white shadow-lg hover:shadow-xl",
-    danger: "bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl",
+      "bg-yellow-500 hover:bg-yellow-600 text-[var(--color-light-text-inverse)] shadow-lg hover:shadow-xl",
+    danger: "bg-red-500 hover:bg-red-600 text-[var(--color-light-text-inverse)] shadow-lg hover:shadow-xl",
   };
 
   return (
@@ -39,7 +39,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
         flex items-center justify-center
         transition-all duration-300 ease-in-out
         transform hover:scale-110 active:scale-95
-        focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-50
+        focus:outline-none focus:ring-4 focus:ring-[var(--color-green-300)] focus:ring-opacity-50
         ${className}
       `}
       aria-label={text || "Floating action button"}

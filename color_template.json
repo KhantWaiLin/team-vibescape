@@ -1,0 +1,508 @@
+{
+  "styles": {
+    "paint": [
+      {
+        "id": "S:4c5d552228a7ef0abe6cacd5587059b4c0f1c8e5,",
+        "name": "Gradient",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "GRADIENT_LINEAR",
+          "gradientStops": [
+            {
+              "position": 0,
+              "color": {
+                "r": 0,
+                "g": 0.40392157435417175,
+                "b": 0.21960784494876862,
+                "a": 1
+              }
+            },
+            {
+              "position": 1,
+              "color": {
+                "r": 0,
+                "g": 0.47999998927116394,
+                "b": 0.26097092032432556,
+                "a": 1
+              }
+            }
+          ],
+          "allPaints": [
+            {
+              "type": "GRADIENT_LINEAR",
+              "opacity": 1,
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": {
+                    "r": 0,
+                    "g": 0.40392157435417175,
+                    "b": 0.21960784494876862,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                },
+                {
+                  "position": 1,
+                  "color": {
+                    "r": 0,
+                    "g": 0.47999998927116394,
+                    "b": 0.26097092032432556,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                }
+              ],
+              "gradientTransform": [
+                [
+                  1,
+                  -2.6842725561394994e-16,
+                  -2.3684765049626798e-17
+                ],
+                [
+                  1.9749736512047507e-16,
+                  0.5056790113449097,
+                  0.24716049432754517
+                ]
+              ]
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:4c5d552228a7ef0abe6cacd5587059b4c0f1c8e5,",
+          "name": "Gradient",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "GRADIENT_LINEAR",
+              "opacity": 1,
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": {
+                    "r": 0,
+                    "g": 0.40392157435417175,
+                    "b": 0.21960784494876862,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                },
+                {
+                  "position": 1,
+                  "color": {
+                    "r": 0,
+                    "g": 0.47999998927116394,
+                    "b": 0.26097092032432556,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                }
+              ],
+              "gradientTransform": [
+                [
+                  1,
+                  -2.6842725561394994e-16,
+                  -2.3684765049626798e-17
+                ],
+                [
+                  1.9749736512047507e-16,
+                  0.5056790113449097,
+                  0.24716049432754517
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:ae3692776f53060fbb0c8fdf223ebcce7aebb124,",
+        "name": "Accent",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "SOLID",
+          "color": {
+            "r": 0.9607843160629272,
+            "g": 0.9764705896377563,
+            "b": 0.9686274528503418,
+            "a": 1
+          },
+          "opacity": 1,
+          "allPaints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.9607843160629272,
+                "g": 0.9764705896377563,
+                "b": 0.9686274528503418
+              }
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:ae3692776f53060fbb0c8fdf223ebcce7aebb124,",
+          "name": "Accent",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.9607843160629272,
+                "g": 0.9764705896377563,
+                "b": 0.9686274528503418
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:938595784e1179b70fc206165403312f5a53c0b1,",
+        "name": "Primary Color",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "GRADIENT_LINEAR",
+          "gradientStops": [
+            {
+              "position": 0,
+              "color": {
+                "r": 0,
+                "g": 0.5,
+                "b": 0.37218043208122253,
+                "a": 1
+              }
+            },
+            {
+              "position": 1,
+              "color": {
+                "r": 0,
+                "g": 0.5215686559677124,
+                "b": 0.38823530077934265,
+                "a": 1
+              }
+            }
+          ],
+          "allPaints": [
+            {
+              "type": "GRADIENT_LINEAR",
+              "opacity": 1,
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": {
+                    "r": 0,
+                    "g": 0.5,
+                    "b": 0.37218043208122253,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                },
+                {
+                  "position": 1,
+                  "color": {
+                    "r": 0,
+                    "g": 0.5215686559677124,
+                    "b": 0.38823530077934265,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                }
+              ],
+              "gradientTransform": [
+                [
+                  1,
+                  -2.6842725561394994e-16,
+                  -2.3684765049626798e-17
+                ],
+                [
+                  1.9749736512047507e-16,
+                  0.5056790113449097,
+                  0.24716049432754517
+                ]
+              ]
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:938595784e1179b70fc206165403312f5a53c0b1,",
+          "name": "Primary Color",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "GRADIENT_LINEAR",
+              "opacity": 1,
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": {
+                    "r": 0,
+                    "g": 0.5,
+                    "b": 0.37218043208122253,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                },
+                {
+                  "position": 1,
+                  "color": {
+                    "r": 0,
+                    "g": 0.5215686559677124,
+                    "b": 0.38823530077934265,
+                    "a": 1
+                  },
+                  "boundVariable": null
+                }
+              ],
+              "gradientTransform": [
+                [
+                  1,
+                  -2.6842725561394994e-16,
+                  -2.3684765049626798e-17
+                ],
+                [
+                  1.9749736512047507e-16,
+                  0.5056790113449097,
+                  0.24716049432754517
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:741f7c15146795c46fa6814395fcda0738b1e36c,",
+        "name": "Text/Title",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "SOLID",
+          "color": {
+            "r": 0,
+            "g": 0.11999999731779099,
+            "b": 0.08932331204414368,
+            "a": 1
+          },
+          "opacity": 1,
+          "allPaints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0,
+                "g": 0.11999999731779099,
+                "b": 0.08932331204414368
+              }
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:741f7c15146795c46fa6814395fcda0738b1e36c,",
+          "name": "Text/Title",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0,
+                "g": 0.11999999731779099,
+                "b": 0.08932331204414368
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:0488215e434f257b6c8246b8c78e5c8a77210b38,",
+        "name": "Text/Body",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "SOLID",
+          "color": {
+            "r": 0.3764705955982208,
+            "g": 0.4627451002597809,
+            "b": 0.43921568989753723,
+            "a": 1
+          },
+          "opacity": 1,
+          "allPaints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.3764705955982208,
+                "g": 0.4627451002597809,
+                "b": 0.43921568989753723
+              }
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:0488215e434f257b6c8246b8c78e5c8a77210b38,",
+          "name": "Text/Body",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.3764705955982208,
+                "g": 0.4627451002597809,
+                "b": 0.43921568989753723
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:5daa0de7ef3fc95ebd06526032cb68414af08e6e,",
+        "name": "Text/White",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "SOLID",
+          "color": {
+            "r": 0.9803921580314636,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709,
+            "a": 1
+          },
+          "opacity": 1,
+          "allPaints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.9803921580314636,
+                "g": 0.9882352948188782,
+                "b": 0.9843137264251709
+              }
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:5daa0de7ef3fc95ebd06526032cb68414af08e6e,",
+          "name": "Text/White",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.9803921580314636,
+                "g": 0.9882352948188782,
+                "b": 0.9843137264251709
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:150424a98718d197075148360349a6f1bfed32be,",
+        "name": "Border/Border Color",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "SOLID",
+          "color": {
+            "r": 0.9019607901573181,
+            "g": 0.9137254953384399,
+            "b": 0.9215686321258545,
+            "a": 1
+          },
+          "opacity": 1,
+          "allPaints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.9019607901573181,
+                "g": 0.9137254953384399,
+                "b": 0.9215686321258545
+              }
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:150424a98718d197075148360349a6f1bfed32be,",
+          "name": "Border/Border Color",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.9019607901573181,
+                "g": 0.9137254953384399,
+                "b": 0.9215686321258545
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "S:ad859eda8cd6d2e3a351fb8f276639dc5cfbb03c,",
+        "name": "Icon/Default",
+        "type": "paint",
+        "value": {
+          "type": "PAINT",
+          "paintType": "SOLID",
+          "color": {
+            "r": 0.3764705955982208,
+            "g": 0.4627451002597809,
+            "b": 0.43921568989753723,
+            "a": 1
+          },
+          "opacity": 1,
+          "allPaints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.3764705955982208,
+                "g": 0.4627451002597809,
+                "b": 0.43921568989753723
+              }
+            }
+          ],
+          "useVariableReferences": true
+        },
+        "originalData": {
+          "id": "S:ad859eda8cd6d2e3a351fb8f276639dc5cfbb03c,",
+          "name": "Icon/Default",
+          "type": "PAINT",
+          "boundVariables": {},
+          "paints": [
+            {
+              "type": "SOLID",
+              "opacity": 1,
+              "color": {
+                "r": 0.3764705955982208,
+                "g": 0.4627451002597809,
+                "b": 0.43921568989753723
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
