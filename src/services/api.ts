@@ -1,1 +1,202 @@
-import { config } from "../utils/config";
+import axios from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { config } from '../utils/config';
+
+// API Configuration
+const API_BASE_URL = config.baseUrl;
+
+console.log('🔧 API Service Configuration:', {
+  baseUrl: API_BASE_URL,
+  environment: config.environment,
+  mode: config.mode
+});
+
+// Create axios instance
+const axiosInstance: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000, // 10 seconds
+  withCredentials: true, // Include cookies for CSRF
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest', // Laravel expects this
+  },
+});
+
+// Request interceptor to add auth token and handle CSRF
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    // Add Bearer token if available
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      config.headers['Authorization'] = `Bearer ${authToken}`;
+      console.log('🔑 Added Bearer token to request');
+    }
+
+    // For non-GET requests, ensure we have CSRF token
+    if (config.method !== 'get') {
+      try {
+        // Get CSRF token from Sanctum
+        await axios.get(`${config.baseURL}/sanctum/csrf-cookie`, {
+          withCredentials: true
+        });
+        console.log('🛡️ CSRF token obtained');
+      } catch (error) {
+        console.warn('⚠️ Could not get CSRF token:', error);
+      }
+    }
+
+    console.log('🚀 API Request:', {
+      method: config.method?.toUpperCase(),
+      url: config.url,
+      baseURL: config.baseURL,
+      headers: config.headers,
+      data: config.data,
+    });
+
+    return config;
+  },
+  (error) => {
+    console.error('❌ Request interceptor error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for better error handling
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse) => {
+    console.log('✅ API Response:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data,
+    });
+    return response;
+  },
+  async (error) => {
+    console.error('❌ API Error:', {
+      status: error.response?.status,
+      message: error.message,
+      url: error.config?.url,
+      data: error.response?.data,
+    });
+
+    // Handle common errors
+    if (error.response?.status === 401) {
+      console.log('🔒 Unauthorized - clearing auth data');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('authUser');
+      // You can redirect to login here if needed
+    }
+
+    if (error.response?.status === 422) {
+      console.log('📝 Validation error:', error.response.data);
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// API Service Class
+class ApiService {
+  // GET request
+  async get<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await axiosInstance.get<T>(endpoint, config);
+    return response.data;
+  }
+
+  // POST request
+  async post<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await axiosInstance.post<T>(endpoint, data, config);
+    return response.data;
+  }
+
+  // PUT request
+  async put<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await axiosInstance.put<T>(endpoint, data, config);
+    return response.data;
+  }
+
+  // DELETE request
+  async delete<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await axiosInstance.delete<T>(endpoint, config);
+    return response.data;
+  }
+
+  // PATCH request
+  async patch<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await axiosInstance.patch<T>(endpoint, data, config);
+    return response.data;
+  }
+
+  // Get auth headers (for backward compatibility)
+  getAuthHeaders(): Record<string, string> {
+    const token = localStorage.getItem('authToken');
+    return {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  }
+}
+
+// Create and export API service instance
+export const apiService = new ApiService();
+
+// Export individual methods for convenience
+export const { get, post, put, delete: del, patch } = apiService;
+
+// API Endpoints
+export const API_ENDPOINTS = {
+  // Auth endpoints
+  AUTH: {
+    LOGIN: '/api/login',
+    REGISTER: '/api/register',
+    LOGOUT: '/api/logout',
+    REFRESH: '/api/refresh',
+  },
+  
+  // Forms endpoints
+  FORMS: {
+    LIST: '/forms',
+    CREATE: '/forms',
+    SHOW: (id: string | number) => `/forms/${id}`,
+    UPDATE: (id: string | number) => `/forms/${id}`,
+    DELETE: (id: string | number) => `/forms/${id}`,
+    PUBLISH: (id: string | number) => `/forms/${id}/publish`,
+    UNPUBLISH: (id: string | number) => `/forms/${id}/unpublish`,
+  },
+  
+  // Questions endpoints
+  QUESTIONS: {
+    LIST: (formId: string | number) => `/forms/${formId}/questions`,
+    CREATE: (formId: string | number) => `/forms/${formId}/questions`,
+    SHOW: (formId: string | number, questionId: string | number) => 
+      `/forms/${formId}/questions/${questionId}`,
+    UPDATE: (formId: string | number, questionId: string | number) => 
+      `/forms/${formId}/questions/${questionId}`,
+    DELETE: (formId: string | number, questionId: string | number) => 
+      `/forms/${formId}/questions/${questionId}`,
+  },
+  
+  // Templates endpoints
+  TEMPLATES: {
+    LIST: '/templates',
+    SHOW: (id: string | number) => `/templates/${id}`,
+    USE: (id: string | number) => `/templates/${id}/use`,
+  },
+  
+  // Responses endpoints
+  RESPONSES: {
+    LIST: (formId: string | number) => `/forms/${formId}/responses`,
+    SHOW: (formId: string | number, responseId: string | number) => 
+      `/forms/${formId}/responses/${responseId}`,
+    CREATE: (formId: string | number) => `/forms/${formId}/responses`,
+  },
+  
+  // User endpoints
+  USER: {
+    PROFILE: '/user/profile',
+    UPDATE_PROFILE: '/user/profile',
+    FORMS: '/user/forms',
+    DASHBOARD: '/user/dashboard',
+  },
+} as const;

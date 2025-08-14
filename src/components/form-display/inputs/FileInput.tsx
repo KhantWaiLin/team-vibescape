@@ -8,7 +8,7 @@ interface FileInputProps {
   onChange?: (value: File) => void;
 }
 
-const FileInput: React.FC<FileInputProps> = ({ question, value, onChange }) => {
+const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
   return (
     <div className="w-full">
       {/* File upload drop zone */}

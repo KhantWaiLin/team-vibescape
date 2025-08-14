@@ -16,3 +16,5 @@ export { default as FormCard } from './FormCard';
 export { default as CategoryDropdown } from './CategoryDropdown';
 export { default as TemplateCard } from './TemplateCard';
 export { default as FilterTabs } from './FilterTabs';
+export { default as AIFormBuilderModal } from './AIFormBuilderModal';
+export { default as ProtectedRoute } from './ProtectedRoute';

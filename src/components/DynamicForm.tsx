@@ -55,7 +55,7 @@ const DateTimeInput = ({ q, register, error }: any) => (
   />
 );
 
-const RadioGroup = ({ q, register, error }: any) => (
+const RadioGroup = ({ q, register }: any) => (
   <div className="flex flex-col gap-2 mt-1">
     {q.options &&
       JSON.parse(q.options).map((opt: string, idx: number) => (
@@ -72,7 +72,7 @@ const RadioGroup = ({ q, register, error }: any) => (
   </div>
 );
 
-const CheckboxGroup = ({ q, register, error }: any) => (
+const CheckboxGroup = ({ q, register }: any) => (
   <div className="flex flex-col gap-2 mt-1">
     {q.options &&
       JSON.parse(q.options).map((opt: string, idx: number) => (

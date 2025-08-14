@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import FormBuilderSidebar from "../FormBuilderSidebar";
 import FormSettingsSidebar from "../FormSettingsSidebar";
 import FormHeader from "../FormHeader";
+import { useNavigate } from "react-router-dom";
 
 interface Question {
   id: number;
@@ -26,9 +27,9 @@ interface FormCreateLayoutProps {
   onPreviewClick?: () => void;
 }
 
-const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({ 
-  children, 
-  questions = [], 
+const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
+  children,
+  questions = [],
   onQuestionsChange,
   selectedQuestion = null,
   onQuestionSelect,
@@ -36,10 +37,11 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
   formDescription = "",
   onFormTitleChange,
   onFormDescriptionChange,
-  onPreviewClick
+  onPreviewClick,
 }) => {
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   const toggleLeftSidebar = () => {
     setLeftSidebarOpen(!leftSidebarOpen);
@@ -57,11 +59,14 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
         question_text: `New ${questionType} question`,
         question_type: questionType,
         is_required: 0,
-        placeholder: `Enter your ${questionType.replace('_', ' ')}`,
-        options: questionType === 'dropdown' || questionType === 'multiple_choice' || questionType === 'checkboxes' 
-          ? '["Option 1", "Option 2", "Option 3"]' 
-          : null,
-        order: questions.length
+        placeholder: `Enter your ${questionType.replace("_", " ")}`,
+        options:
+          questionType === "dropdown" ||
+          questionType === "multiple_choice" ||
+          questionType === "checkboxes"
+            ? '["Option 1", "Option 2", "Option 3"]'
+            : null,
+        order: questions.length,
       };
       onQuestionsChange([...questions, newQuestion]);
     }
@@ -72,10 +77,12 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
       {/* Header - Fixed full width */}
       <FormHeader
         formTitle={formTitle}
-        onBackClick={() => console.log('Back clicked')}
-        onPreviewClick={onPreviewClick || (() => console.log('Preview clicked'))}
-        onSubmitClick={() => console.log('Submit to Admin clicked')}
-        onSaveDraftClick={() => console.log('Save draft clicked')}
+        onBackClick={() => navigate("/")}
+        onPreviewClick={
+          onPreviewClick || (() => console.log("Preview clicked"))
+        }
+        onSubmitClick={() => console.log("Submit to Admin clicked")}
+        onSaveDraftClick={() => console.log("Save draft clicked")}
       />
 
       {/* Left Sidebar - Question types and tools */}
@@ -94,7 +101,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
         selectedQuestion={selectedQuestion}
         onQuestionUpdate={(updatedQuestion) => {
           if (onQuestionsChange && onQuestionSelect) {
-            const updatedQuestions = questions.map(q => 
+            const updatedQuestions = questions.map((q) =>
               q.id === updatedQuestion.id ? updatedQuestion : q
             );
             onQuestionsChange(updatedQuestions);

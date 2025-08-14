@@ -1,7 +1,9 @@
 import React, { Suspense } from "react";
 import type { RouteObject } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Layout } from "../components/layout/index";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 // Lazy load components
 const Home = React.lazy(() => import("../pages/Home"));
@@ -21,7 +23,9 @@ export const routes: RouteObject[] = [
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <Home />
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
         </Suspense>
       </Layout>
     ),
@@ -35,11 +39,25 @@ export const routes: RouteObject[] = [
     ),
   },
   {
+    path: "/templates",
+    element: (
+      <Layout>
+        <Suspense fallback={<LoadingSpinner />}>
+          <ProtectedRoute>
+            <Templates />
+          </ProtectedRoute>
+        </Suspense>
+      </Layout>
+    ),
+  },
+  {
     path: "/dashboard",
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <Dashboard />
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
         </Suspense>
       </Layout>
     ),
@@ -49,17 +67,9 @@ export const routes: RouteObject[] = [
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <MyForm />
-        </Suspense>
-      </Layout>
-    ),
-  },
-  {
-    path: "/templates",
-    element: (
-      <Layout>
-        <Suspense fallback={<LoadingSpinner />}>
-          <Templates />
+          <ProtectedRoute>
+            <MyForm />
+          </ProtectedRoute>
         </Suspense>
       </Layout>
     ),
@@ -69,7 +79,9 @@ export const routes: RouteObject[] = [
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <MyForm />
+          <ProtectedRoute>
+            <MyForm />
+          </ProtectedRoute>
         </Suspense>
       </Layout>
     ),
@@ -79,7 +91,9 @@ export const routes: RouteObject[] = [
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <Draft />
+          <ProtectedRoute>
+            <Draft />
+          </ProtectedRoute>
         </Suspense>
       </Layout>
     ),
@@ -89,7 +103,9 @@ export const routes: RouteObject[] = [
     element: (
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <Trash />
+          <ProtectedRoute>
+            <Trash />
+          </ProtectedRoute>
         </Suspense>
       </Layout>
     ),
@@ -98,7 +114,9 @@ export const routes: RouteObject[] = [
     path: "/create-form",
     element: (
       <Suspense fallback={<LoadingSpinner />}>
-        <CreateForm />
+        <ProtectedRoute>
+          <CreateForm />
+        </ProtectedRoute>
       </Suspense>
     ),
   },
@@ -113,3 +131,16 @@ export const routes: RouteObject[] = [
 ];
 
 // Export individual routes for easy access
+
+// Default export for AppRoutes component
+const AppRoutes: React.FC = () => {
+  return (
+    <Routes>
+      {routes.map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+      ))}
+    </Routes>
+  );
+};
+
+export default AppRoutes;

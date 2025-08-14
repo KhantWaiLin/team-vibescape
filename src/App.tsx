@@ -1,23 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { routes } from "./routes";
-
-function AppContent() {
-  return (
-    <div className="min-h-screen">
-      <Routes>
-        {routes.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-      </Routes>
-    </div>
-  );
-}
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import AppRoutes from "./routes";
 
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
 }
 

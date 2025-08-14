@@ -1,41 +1,82 @@
 @import "tailwindcss";
 
 @theme{
-    /* Primary Green Theme */
-    --color-primary: #006738;
-    --color-primary-hover: #007A43;
+    /* Primary Colors - Based on color_template.json */
+    --color-primary: #00805F; /* Primary Color from template */
+    --color-primary-hover: #008563; /* Slightly lighter green */
+    --color-primary-light: #00A06F; /* Accent green */
     
-    /* Green Color Scale */
-    --color-green-100: #dcfce7;
-    --color-green-200: #bbf7d0;
-    --color-green-300: #86efac;
-    --color-green-400: #4ade80;
-    --color-green-500: #22c55e;
-    --color-green-600: #16a34a;
-    --color-green-700: #15803d;
-    --color-green-800: #166534;
-    --color-green-900: #14532d;
+    /* Gradient Colors */
+    --color-gradient-start: #006738; /* Dark green from gradient */
+    --color-gradient-end: #007A43; /* Lighter green from gradient */
     
-    /* Black Color Scale */
-    --color-black-100: #f3f4f6;
-    --color-black-200: #e5e7eb;
-    --color-black-300: #d1d5db;
-    --color-black-400: #9ca3af;
-    --color-black-500: #6b7280;
-    --color-black-600: #4b5563;
-    --color-black-700: #374151;
-    --color-black-800: #1f2937;
-    --color-black-900: #111827;
+    /* Text Colors */
+    --color-text-title: #001F17; /* Text/Title - Very dark green */
+    --color-text-body: #607672; /* Text/Body - Medium gray-green */
+    --color-text-white: #FAFCFB; /* Text/White - Off-white */
+    --color-text-muted: #607672; /* Same as body for muted text */
     
-    /* Theme Background Colors */
-    --color-light-bg: #ffffff;
-    --color-light-surface: var(--color-black-100);
-    --color-light-card: #ffffff;
-    --color-light-border: var(--color-black-200);
+    /* Background Colors */
+    --color-bg-primary: #FAFCFB; /* Text/White as primary background */
+    --color-bg-secondary: #E6E9EB; /* Border color as secondary background */
+    --color-bg-surface: #F5F7F8; /* Lighter version of border for surfaces */
+    --color-bg-card: #FFFFFF; /* Pure white for cards */
     
-    /* Light Theme Font Colors */
-    --color-light-text-primary: var(--color-black-900);
-    --color-light-text-secondary: var(--color-black-600);
-    --color-light-text-muted: var(--color-black-500);
-    --color-light-text-inverse: #ffffff;
+    /* Border Colors */
+    --color-border-primary: #E6E9EB; /* Border/Border Color */
+    --color-border-light: #F0F2F3; /* Lighter border variant */
+    
+    /* Icon Colors */
+    --color-icon-default: #607672; /* Icon/Default */
+    --color-icon-primary: #00805F; /* Primary green for active icons */
+    --color-icon-muted: #A0B0AB; /* Muted icon color */
+    
+    /* Status Colors */
+    --color-success: #00805F; /* Primary green for success */
+    --color-success-light: #E6F4F0; /* Light success background */
+    --color-warning: #F59E0B; /* Warning color */
+    --color-warning-light: #FEF3C7; /* Light warning background */
+    --color-error: #DC2626; /* Error color */
+    --color-error-light: #FEE2E2; /* Light error background */
+    --color-info: #3B82F6; /* Info color */
+    --color-info-light: #DBEAFE; /* Light info background */
+    
+    /* Interactive Colors */
+    --color-hover: #F8FAFC; /* Hover state background */
+    --color-focus: #00805F; /* Focus ring color */
+    --color-active: #006B4A; /* Active state color */
+    
+    /* Shadow Colors */
+    --color-shadow: rgba(0, 31, 23, 0.1); /* Shadow based on text title */
+    --color-shadow-light: rgba(0, 31, 23, 0.05); /* Light shadow */
+    
+    /* Legacy Support - Map old variables to new ones */
+    --color-green-100: var(--color-success-light);
+    --color-green-200: #C7F0E0;
+    --color-green-300: #9BE6C9;
+    --color-green-400: #6FDDB3;
+    --color-green-500: var(--color-primary);
+    --color-green-600: var(--color-primary);
+    --color-green-700: var(--color-primary-hover);
+    --color-green-800: #006B4A;
+    --color-green-900: var(--color-text-title);
+    
+    --color-black-100: var(--color-bg-surface);
+    --color-black-200: var(--color-border-light);
+    --color-black-300: var(--color-border-primary);
+    --color-black-400: var(--color-icon-muted);
+    --color-black-500: var(--color-text-muted);
+    --color-black-600: var(--color-text-body);
+    --color-black-700: var(--color-text-body);
+    --color-black-800: #2D3A36;
+    --color-black-900: var(--color-text-title);
+    
+    --color-light-bg: var(--color-bg-primary);
+    --color-light-surface: var(--color-bg-surface);
+    --color-light-card: var(--color-bg-card);
+    --color-light-border: var(--color-border-primary);
+    --color-light-text-primary: var(--color-text-title);
+    --color-light-text-secondary: var(--color-text-body);
+    --color-light-text-muted: var(--color-text-muted);
+    --color-light-text-inverse: var(--color-text-white);
 }

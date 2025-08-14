@@ -1,15 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import bgImage from "../../assets/images/login_bg.png";
 import StarImage from "../../assets/images/star.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localError, setLocalError] = useState("");
+  
+  const { login, isAuthenticated, error, clearError } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Clear local error when auth error changes
+  useEffect(() => {
+    if (error) {
+      setLocalError(error);
+      clearError();
+    }
+  }, [error, clearError]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login attempt:", { email, password });
+    setLocalError("");
+    setIsSubmitting(true);
+
+    try {
+      await login(email, password);
+      // Login successful - useAuth will handle the state
+      // Navigation will happen automatically via useEffect
+    } catch (error) {
+      setLocalError("Login failed. Please check your credentials.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -38,6 +70,14 @@ const Login = () => {
               Get started with the simplest way to create forms.
             </p>
           </div>
+
+          {/* Error Message */}
+          {localError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{localError}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
@@ -54,7 +94,8 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)]"
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)] disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Enter your email"
               />
             </div>
@@ -73,7 +114,8 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)]"
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)] disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Enter your password"
               />
             </div>
@@ -83,7 +125,8 @@ const Login = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 focus:ring-[var(--color-green-500)] border-[var(--color-black-300)] rounded"
+                  disabled={isSubmitting}
+                  className="h-4 w-4 focus:ring-[var(--color-green-500)] border-[var(--color-black-300)] rounded disabled:opacity-50"
                 />
                 <label
                   htmlFor="remember-me"
@@ -95,7 +138,8 @@ const Login = () => {
               <div className="text-sm">
                 <button
                   type="button"
-                  className="text-[12px] font-[400] text-[var(--color-green-600)] hover:text-[var(--color-green-700)]"
+                  disabled={isSubmitting}
+                  className="text-[12px] font-[400] text-[var(--color-green-600)] hover:text-[var(--color-green-700)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Forgot password?
                 </button>
@@ -103,9 +147,17 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] cursor-pointer text-[var(--color-light-text-inverse)] font-[700] text-[14px] py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-green-500)] focus:ring-offset-2"
+              disabled={isSubmitting}
+              className="w-full bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] disabled:bg-[var(--color-green-400)] cursor-pointer text-[var(--color-light-text-inverse)] font-[700] text-[14px] py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-green-500)] focus:ring-offset-2 disabled:cursor-not-allowed"
             >
-              Log in
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Logging in...
+                </div>
+              ) : (
+                "Log in"
+              )}
             </button>
           </form>
         </div>
