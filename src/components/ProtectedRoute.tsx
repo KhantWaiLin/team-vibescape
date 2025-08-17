@@ -1,38 +1,59 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import LoadingSpinner from './LoadingSpinner';
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import LoadingSpinner from "./LoadingSpinner";
+import { verifyAuthToken } from "../services/api";
+import { useEffect, useState } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAdmin?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
-  requireAdmin = false 
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requireAdmin = false,
 }) => {
   const { user, token, isLoading } = useAuth();
   const location = useLocation();
-  
+  const [verifying, setVerifying] = useState<boolean>(false);
+  const [valid, setValid] = useState<boolean>(true);
+
+  useEffect(() => {
+    const check = async () => {
+      if (!token) return;
+      setVerifying(true);
+      const ok = await verifyAuthToken();
+      setValid(ok);
+      setVerifying(false);
+    };
+    check();
+  }, [token, location.pathname]);
+
   // Show loading spinner while checking authentication
-  if (isLoading) {
+  if (isLoading || verifying) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
-
+  console.log(user, token);
+  // If token invalid per backend, redirect to login
+  if (token && !valid) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
   // Redirect to login if not authenticated
   if (!user || !token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // Check admin requirement if specified
-  if (requireAdmin && !user) {
+  if (requireAdmin) {
     // You can add admin role check here later
     // For now, redirect to home if not admin
+    // TODO: Implement proper admin role checking
+    console.log("Admin check required - implement role-based logic");
     return <Navigate to="/" replace />;
   }
 

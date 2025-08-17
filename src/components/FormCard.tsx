@@ -1,10 +1,12 @@
 import React from "react";
 import { truncateWords } from "../utils/textUtils";
 import { userGroupIcon, eyeIcon } from "../assets/icons/icons";
+import StatusBadge from "./StatusBadge";
+import type { FormStatus } from "../utils";
 
 export interface FormCardProps {
   title: string;
-  statusLabel?: string;
+  statusLabel?: FormStatus;
   statusColor?: string;
   description: string;
   category: string;
@@ -13,6 +15,7 @@ export interface FormCardProps {
   participantsCount?: number;
   viewsCount?: number;
   showMetrics?: boolean;
+  onEdit?: () => void;
 }
 
 const FormCard: React.FC<FormCardProps> = ({
@@ -26,6 +29,7 @@ const FormCard: React.FC<FormCardProps> = ({
   participantsCount,
   viewsCount,
   showMetrics = true,
+  onEdit,
 }) => {
   return (
     <div className="rounded-2xl border border-[var(--color-light-border)] bg-[var(--color-light-card)] p-6 shadow-sm h-full flex flex-col">
@@ -33,13 +37,22 @@ const FormCard: React.FC<FormCardProps> = ({
         <h3 className="text-lg font-semibold text-[var(--color-black-900)]">
           {title}
         </h3>
-        {statusLabel ? (
-          <span
-            className={`rounded-full border border-[var(--color-light-border)] px-3 py-1 text-xs font-medium ${statusColor}`}
-          >
-            {statusLabel}
-          </span>
-        ) : null}
+        <div className="flex items-center gap-2">
+          {statusLabel ? <StatusBadge status={statusLabel} /> : null}
+          {/* Edit button - only show for draft status */}
+          {statusLabel === 'draft' && onEdit && (
+            <button
+              onClick={onEdit}
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-[var(--color-blue-600)] bg-[var(--color-blue-50)] border border-[var(--color-blue-200)] rounded-md hover:bg-[var(--color-blue-100)] hover:border-[var(--color-blue-300)] transition-colors"
+              title="Edit form"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Edit
+            </button>
+          )}
+        </div>
       </div>
 
       <p className="mt-3 text-[var(--color-black-600)] leading-relaxed">

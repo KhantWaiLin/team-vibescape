@@ -16,12 +16,22 @@ import {
   emailIcon,
   pinIcon,
   dividerIcon,
+  submissionIcon,
 } from "../assets/icons/icons.tsx";
 
 export const navItems = [
   { path: "/", label: "Home", icon: homeIcon },
-  { path: "/templates", label: "Templates", icon: fileIcon },
-  { path: "/my-forms", label: "My Forms", icon: inboxIcon },
+  { path: "/templates", label: "Template", icon: fileIcon },
+  { path: "/my-forms", label: "My Form", icon: inboxIcon },
+  { path: "/draft", label: "Draft", icon: layerIcon },
+  { path: "/trash", label: "Transh", icon: trashIcon },
+];
+
+export const adminNavItems = [
+  { path: "/", label: "Home", icon: homeIcon },
+  { path: "/submission", label: "Submission", icon: submissionIcon },
+  { path: "/templates", label: "Template", icon: fileIcon },
+  { path: "/my-forms", label: "My Form", icon: inboxIcon },
   { path: "/draft", label: "Draft", icon: layerIcon },
   { path: "/trash", label: "Transh", icon: trashIcon },
 ];

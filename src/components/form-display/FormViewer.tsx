@@ -6,7 +6,7 @@ interface FormViewerProps {
   formTitle: string;
   formDescription?: string;
   questions: Question[];
-  onSubmit?: (formData: Record<number, any>) => void;
+  onSubmit?: (formData: Record<number | string, any>) => void;
   onBack?: () => void;
   isPreview?: boolean;
   submitButtonText?: string;
@@ -25,9 +25,9 @@ const FormViewer: React.FC<FormViewerProps> = ({
   isPreview = false,
   submitButtonText = "Submit Form"
 }) => {
-  const [formData, setFormData] = useState<Record<number, any>>({});
+  const [formData, setFormData] = useState<Record<number | string, any>>({});
 
-  const handleInputChange = (questionId: number, value: any) => {
+  const handleInputChange = (questionId: number | string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [questionId]: value
@@ -103,12 +103,12 @@ const FormViewer: React.FC<FormViewerProps> = ({
               <p className="text-[var(--color-light-text-muted)]">No questions added to this form yet</p>
             </div>
           ) : (
-            questions.map((question) => (
+            questions.map((question, index) => (
               <QuestionBlock 
-                key={question.id} 
+                key={question.id ?? `${question.question_type}-${index}`}
                 question={question}
-                value={formData[question.id]}
-                onChange={(value) => handleInputChange(question.id, value)}
+                value={formData[question.id ?? `${question.question_type}-${index}`]}
+                onChange={(value) => handleInputChange(question.id ?? `${question.question_type}-${index}`, value)}
               />
             ))
           )}

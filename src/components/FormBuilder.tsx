@@ -20,13 +20,17 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   formDescription = ""
 }) => {
   const updateQuestion = (updatedQuestion: Question) => {
-    const updatedQuestions = questions.map(q => 
-      q.id === updatedQuestion.id ? updatedQuestion : q
-    );
+    const updatedQuestions = questions.map(q => {
+      if (q.id !== undefined && updatedQuestion.id !== undefined) {
+        return q.id === updatedQuestion.id ? updatedQuestion : q;
+      }
+      // If either id is missing, fall back to object identity
+      return q === updatedQuestion ? updatedQuestion : q;
+    });
     onQuestionsChange(updatedQuestions);
     
     // Update selected question if it's the one being updated
-    if (selectedQuestion && selectedQuestion.id === updatedQuestion.id) {
+    if (selectedQuestion && selectedQuestion.id !== undefined && updatedQuestion.id !== undefined && selectedQuestion.id === updatedQuestion.id) {
       onQuestionSelect(updatedQuestion);
     }
   };
@@ -65,13 +69,13 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
           <p className="text-gray-500">Click the buttons in the left sidebar to add questions</p>
         </div>
       ) : (
-        questions.map((question) => (
+        questions.map((question, index) => (
           <QuestionBuilderBlock
-            key={question.id}
+            key={question.id ?? `${question.question_type}-${index}`}
             question={question}
             onUpdate={updateQuestion}
             onDelete={deleteQuestion}
-            isSelected={selectedQuestion?.id === question.id}
+            isSelected={selectedQuestion?.id !== undefined && question.id !== undefined ? selectedQuestion.id === question.id : selectedQuestion === question}
             onSelect={onQuestionSelect}
           />
         ))

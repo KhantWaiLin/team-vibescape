@@ -15,7 +15,7 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({ question, value, onCh
           <label key={idx} className="inline-flex items-center text-[var(--color-light-text-primary)] font-medium">
             <input
               type="radio"
-              name={`question-${question.id}`}
+              name={`question-${question.id ?? 'temp'}`}
               value={opt}
               checked={value === opt}
               onChange={(e) => onChange?.(e.target.value)}

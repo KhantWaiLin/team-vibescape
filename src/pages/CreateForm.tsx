@@ -4,6 +4,8 @@ import FormBuilder from "../components/FormBuilder";
 import type { Question } from "../types";
 import { FormCreateLayout } from "../components/layout";
 import FormPreview from "../components/FormPreview";
+import { API_ENDPOINTS, apiService } from "../services/api";
+import toast from "react-hot-toast";
 
 const CreateForm = () => {
   const location = useLocation();
@@ -14,16 +16,17 @@ const CreateForm = () => {
   const [formTitle, setFormTitle] = useState<string>("Untitled Form");
   const [formDescription, setFormDescription] = useState<string>("");
   const [isPreviewMode, setIsPreviewMode] = useState<boolean>(false);
+  const [formId, setFormId] = useState<number | null>(null);
 
   // Check for template data from navigation state
   useEffect(() => {
-    const templateData = location.state?.templateData;
-    const isFromTemplate = location.state?.isFromTemplate;
+    const data = location.state?.data;
 
-    if (isFromTemplate && templateData) {
+    if (data) {
       // Convert template questions to the format expected by FormBuilder
-      const templateQuestions: Question[] = templateData.questions.map((q: any) => ({
-        id: q.id,
+      const questions: Question[] = data?.questions?.map((q: any, index: number) => ({
+        // Create temp id if missing for stable selection/editing before save
+        id: q.id ?? (Date.now() + index),
         question_text: q.question_text,
         question_type: q.question_type,
         is_required: q.is_required,
@@ -31,9 +34,14 @@ const CreateForm = () => {
       }));
 
       // Set form data from template
-      setQuestions(templateQuestions);
-      setFormTitle(templateData.title);
-      setFormDescription(templateData.description);
+      setQuestions(questions);
+      setFormTitle(data.title);
+      setFormDescription(data.description);
+      // Extract form id if provided
+      const createdId = data?.response?.id ?? data?.id;
+      if (createdId) {
+        setFormId(createdId);
+      }
       
       // Clear navigation state to prevent re-loading on refresh
       window.history.replaceState({}, document.title);
@@ -54,6 +62,42 @@ const CreateForm = () => {
 
   const handleBackToEdit = () => {
     setIsPreviewMode(false);
+  };
+
+  const handleSaveDraft = async() => {
+    console.log(questions);
+    try {
+      if (!formId) {
+        toast.error('No form ID available to save questions');
+        return;
+      }
+      // Prepare payload: remove id, ensure 1-based order
+      const payload = questions.map((q, index) => ({
+        question_text: q.question_text,
+        question_type: q.question_type,
+        is_required: q.is_required,
+        options: (() => {
+          if (!q.options) return [] as string[];
+          try {
+            const parsed = JSON.parse(q.options as string);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch {
+            return [] as string[];
+          }
+        })(),
+        placeholder: q.placeholder,
+        order: index + 1,
+      }));
+      await apiService.post(
+        API_ENDPOINTS.QUESTIONS.BULK_CREATE(formId),
+        { questions: payload },
+        apiService.getAuthHeaders()
+      );
+      toast.success(`Draft saved successfully! ${questions.length} questions saved.`);
+    } catch (e) {
+      console.error("Failed to save draft", e);
+      toast.error('Failed to save draft. Please try again.');
+    }
   };
 
   // If in preview mode, show the preview component
@@ -80,6 +124,7 @@ const CreateForm = () => {
       onFormTitleChange={setFormTitle}
       onFormDescriptionChange={setFormDescription}
       onPreviewClick={handlePreviewClick}
+      onSaveDraftClick={handleSaveDraft}
     >
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">

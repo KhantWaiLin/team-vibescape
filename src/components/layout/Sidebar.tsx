@@ -1,6 +1,7 @@
 import React from "react";
-import { navItems } from "../../const/const";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { chooseNavItems } from "../../utils/navUtils";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,7 +10,11 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
   const location = useLocation();
-
+  const { isAdmin } = useAuth();
+  
+  // Choose navigation items based on admin status
+  const navItems = chooseNavItems(isAdmin());
+  
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -77,7 +82,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
                   }
                 `}
               >
-                <span className="mr-3 text-lg">{item.icon({ isActive: isActive(item.path) })}</span>
+                <span className="mr-3 text-lg">
+                  {item.icon({ isActive: isActive(item.path) })}
+                </span>
                 {item.label}
               </Link>
             ))}

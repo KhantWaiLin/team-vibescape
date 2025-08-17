@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from "react";
 import type { ReactNode } from "react";
 import { apiService, API_ENDPOINTS } from "../services/api";
 import { setAuthCookie, getAuthCookie, removeAuthCookie } from "../utils/cookieUtils";
+import { verifyAuthToken } from "../services/api";
 
 // Types
 interface User {
@@ -12,6 +13,22 @@ interface User {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+  role_names?: string[];
+  permissions?: string[];
+  roles?: Array<{
+    id: number;
+    name: string;
+    guard_name: string;
+    created_at: string;
+    updated_at: string;
+    permissions: Array<{
+      id: number;
+      name: string;
+      guard_name: string;
+      created_at: string;
+      updated_at: string;
+    }>;
+  }>;
 }
 
 interface AuthResponse {
@@ -20,6 +37,14 @@ interface AuthResponse {
   data: {
     user: User;
     token: string;
+  };
+}
+
+interface ProfileResponse {
+  code: number;
+  message: string;
+  data: {
+    user: User;
   };
 }
 
@@ -44,10 +69,12 @@ interface AuthContextType {
   logout: () => void;
   register: (email: string, password: string, name: string) => Promise<void>;
   clearError: () => void;
+  fetchProfile: () => Promise<void>;
 
   // Utility functions
   isAdmin: () => boolean;
   hasRole: (role: string) => boolean;
+  hasPermission: (permission: string) => boolean;
   getAuthHeaders: () => Record<string, string>;
 }
 
@@ -58,14 +85,15 @@ type AuthAction =
   | { type: "AUTH_FAILURE"; payload: string }
   | { type: "AUTH_LOGOUT" }
   | { type: "CLEAR_ERROR" }
-  | { type: "SET_LOADING"; payload: boolean };
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "UPDATE_PROFILE"; payload: User };
 
 // Initial state
 const initialState: AuthState = {
   user: null,
   token: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
   error: null,
 };
 
@@ -115,6 +143,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         ...state,
         isLoading: action.payload,
       };
+    case "UPDATE_PROFILE":
+      return {
+        ...state,
+        user: action.payload,
+      };
     default:
       return state;
   }
@@ -134,27 +167,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Check for existing token on app load
   useEffect(() => {
     const initializeAuth = async () => {
+      // Begin initialization in loading state to avoid premature redirects
+      dispatch({ type: "SET_LOADING", payload: true });
       const storedToken = getAuthCookie("authToken");
       const storedUser = getAuthCookie("authUser");
 
-      if (storedToken && storedUser) {
-        try {
-          // For now, we'll trust the stored token and user data
-          // In a real app, you might want to validate with a protected endpoint
-          const userData = JSON.parse(storedUser);
-
-          // Check if token is not expired (basic check)
-          // You can add JWT expiration check here if needed
-
-          dispatch({
-            type: "AUTH_SUCCESS",
-            payload: { user: userData, token: storedToken },
-          });
-        } catch (error) {
-          // Invalid stored data, clear cookies
-          removeAuthCookie("authToken");
-          removeAuthCookie("authUser");
+      try {
+        if (storedToken && storedUser) {
+          // Validate with backend profile endpoint
+          const ok = await verifyAuthToken();
+          if (ok) {
+            try {
+              const userData = JSON.parse(storedUser);
+              dispatch({
+                type: "AUTH_SUCCESS",
+                payload: { user: userData, token: storedToken },
+              });
+              
+              // Fetch fresh profile data with roles and permissions
+              const response = await apiService.get<ProfileResponse>(API_ENDPOINTS.USER.PROFILE);
+              if (response.code === 200 && response.data?.user) {
+                dispatch({ type: "UPDATE_PROFILE", payload: response.data.user });
+                setAuthCookie("authUser", JSON.stringify(response.data.user), 30);
+              }
+            } catch (error) {
+              removeAuthCookie("authToken");
+              removeAuthCookie("authUser");
+            }
+          } else {
+            removeAuthCookie("authToken");
+            removeAuthCookie("authUser");
+          }
         }
+      } finally {
+        // Always end loading after initialization completes
+        dispatch({ type: "SET_LOADING", payload: false });
       }
     };
 
@@ -179,6 +226,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         type: "AUTH_SUCCESS",
         payload: { user: data.data.user, token: data.data.token },
       });
+      
+      // Fetch fresh profile data with roles and permissions
+      await fetchProfile();
+      
     } catch (error: any) {
       // Handle API errors
       const errorMessage =
@@ -233,17 +284,51 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: "CLEAR_ERROR" });
   };
 
-  // Utility functions - updated for actual user structure
-  const isAdmin = (): boolean => {
-    // You can implement admin check based on your business logic
-    // For now, checking if user exists (you can add role-based logic later)
-    return state.user !== null;
+  // Fetch user profile with roles and permissions
+  const fetchProfile = async () => {
+    if (!state.token) {
+      console.warn('No token available to fetch profile');
+      return;
+    }
+
+    try {
+      const response = await apiService.get<ProfileResponse>(API_ENDPOINTS.USER.PROFILE);
+      
+      if (response.code === 200 && response.data?.user) {
+        // Update user data with roles and permissions
+        dispatch({ type: "UPDATE_PROFILE", payload: response.data.user });
+        
+        // Update stored user data in cookies
+        setAuthCookie("authUser", JSON.stringify(response.data.user), 30);
+        
+        console.log('✅ Profile fetched successfully:', response.data.user);
+      }
+    } catch (error: any) {
+      console.error('❌ Error fetching profile:', error);
+      // Don't throw error here to avoid breaking the app
+    }
   };
 
-  const hasRole = (_role: string): boolean => {
-    // You can implement role checking based on your business logic
-    // For now, returning true if user exists (you can add role-based logic later)
-    return state.user !== null;
+  // Utility functions - updated for actual user structure
+  // Usage examples:
+  // const { isAdmin, hasRole, hasPermission } = useAuth();
+  // if (isAdmin()) { /* show admin features */ }
+  // if (hasRole('moderator')) { /* show moderator features */ }
+  // if (hasPermission('delete forms')) { /* show delete button */ }
+  
+  const isAdmin = (): boolean => {
+    return state.user?.role_names?.includes('admin') || false;
+  };
+
+  const hasRole = (role: string): boolean => {
+    return state.user?.role_names?.includes(role) || false;
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    // Check if user has the permission through any of their roles
+    return state.user?.roles?.some(role => 
+      role.permissions?.some(perm => perm.name === permission)
+    ) || false;
   };
 
   const getAuthHeaders = (): Record<string, string> => {
@@ -259,8 +344,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     register,
     clearError,
+    fetchProfile,
     isAdmin,
     hasRole,
+    hasPermission,
     getAuthHeaders,
   };
 

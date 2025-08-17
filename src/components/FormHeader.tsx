@@ -12,6 +12,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({
   formTitle,
   onBackClick,
   onPreviewClick,
+  onSaveDraftClick,
   onSubmitClick,
 }) => {
   return (
@@ -59,7 +60,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({
               Preview
             </button>
             <button
-              onClick={onPreviewClick}
+              onClick={onSaveDraftClick}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
             >
               Save to draft

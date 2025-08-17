@@ -3,16 +3,7 @@ import FormBuilderSidebar from "../FormBuilderSidebar";
 import FormSettingsSidebar from "../FormSettingsSidebar";
 import FormHeader from "../FormHeader";
 import { useNavigate } from "react-router-dom";
-
-interface Question {
-  id: number;
-  question_text: string;
-  question_type: string;
-  is_required: number;
-  options: string | null;
-  placeholder?: string;
-  order?: number;
-}
+import type { Question } from "../../types";
 
 interface FormCreateLayoutProps {
   children: React.ReactNode;
@@ -25,6 +16,7 @@ interface FormCreateLayoutProps {
   onFormTitleChange?: (title: string) => void;
   onFormDescriptionChange?: (description: string) => void;
   onPreviewClick?: () => void;
+  onSaveDraftClick?: () => void;
 }
 
 const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
@@ -38,6 +30,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
   onFormTitleChange,
   onFormDescriptionChange,
   onPreviewClick,
+  onSaveDraftClick,
 }) => {
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
@@ -55,7 +48,8 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
     console.log(`Adding question type: ${questionType}`);
     if (onQuestionsChange) {
       const newQuestion: Question = {
-        id: Date.now(), // Simple ID generation
+        // Generate a temporary client-side id for stable selection/updates
+        id: Date.now() + Math.floor(Math.random() * 100000),
         question_text: `New ${questionType} question`,
         question_type: questionType,
         is_required: 0,
@@ -66,7 +60,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
           questionType === "checkboxes"
             ? '["Option 1", "Option 2", "Option 3"]'
             : null,
-        order: questions.length,
+        order: questions.length + 1,
       };
       onQuestionsChange([...questions, newQuestion]);
     }
@@ -82,7 +76,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
           onPreviewClick || (() => console.log("Preview clicked"))
         }
         onSubmitClick={() => console.log("Submit to Admin clicked")}
-        onSaveDraftClick={() => console.log("Save draft clicked")}
+        onSaveDraftClick={onSaveDraftClick || (() => console.log("Save draft clicked"))}
       />
 
       {/* Left Sidebar - Question types and tools */}
