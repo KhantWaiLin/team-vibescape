@@ -12,7 +12,7 @@ const Login = () => {
   
   const { login, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
-
+ 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {

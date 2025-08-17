@@ -12,8 +12,7 @@ const Templates: React.FC = () => {
     // Navigate to CreateForm page with template data
     navigate("/create-form", { 
       state: { 
-        templateData: template,
-        isFromTemplate: true 
+        data: template,
       } 
     });
   };

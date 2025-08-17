@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { config } from '../utils/config';
+import { getAuthCookie, removeAuthCookie } from '../utils/cookieUtils';
 
 // API Configuration
 const API_BASE_URL = config.baseUrl;
@@ -23,11 +24,32 @@ const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
+// ===== Token verification via API =====
+export const verifyAuthToken = async (): Promise<boolean> => {
+  try {
+    // Call profile endpoint with Bearer token; success implies token valid
+    await axiosInstance.get(API_ENDPOINTS.USER.PROFILE, {
+      headers: apiService.getAuthHeaders(),
+    });
+    return true;
+  } catch (error: any) {
+    const status = error?.response?.status;
+    if (status === 401) {
+      removeAuthCookie('authToken');
+      removeAuthCookie('authUser');
+      return false;
+    }
+    // For other errors (network/5xx), don't block the user; treat token as still valid
+    console.warn('Token verification non-auth error; allowing access:', status);
+    return true;
+  }
+};
+
 // Request interceptor to add auth token and handle CSRF
 axiosInstance.interceptors.request.use(
   async (config) => {
     // Add Bearer token if available
-    const authToken = localStorage.getItem('authToken');
+    const authToken = getAuthCookie('authToken');
     if (authToken) {
       config.headers['Authorization'] = `Bearer ${authToken}`;
       console.log('🔑 Added Bearer token to request');
@@ -83,8 +105,8 @@ axiosInstance.interceptors.response.use(
     // Handle common errors
     if (error.response?.status === 401) {
       console.log('🔒 Unauthorized - clearing auth data');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('authUser');
+      removeAuthCookie('authToken');
+      removeAuthCookie('authUser');
       // You can redirect to login here if needed
     }
 
@@ -130,7 +152,7 @@ class ApiService {
 
   // Get auth headers (for backward compatibility)
   getAuthHeaders(): Record<string, string> {
-    const token = localStorage.getItem('authToken');
+    const token = getAuthCookie('authToken');
     return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -156,13 +178,18 @@ export const API_ENDPOINTS = {
   
   // Forms endpoints
   FORMS: {
-    LIST: '/forms',
-    CREATE: '/forms',
+    LIST: '/api/forms',
+    CREATE: '/api/forms',
+    RECENT: '/api/forms/recent',
     SHOW: (id: string | number) => `/forms/${id}`,
     UPDATE: (id: string | number) => `/forms/${id}`,
     DELETE: (id: string | number) => `/forms/${id}`,
     PUBLISH: (id: string | number) => `/forms/${id}/publish`,
     UNPUBLISH: (id: string | number) => `/forms/${id}/unpublish`,
+  },
+
+  AI:{
+    GENERATE: '/api/forms/template-generate'
   },
   
   // Questions endpoints
@@ -175,6 +202,7 @@ export const API_ENDPOINTS = {
       `/forms/${formId}/questions/${questionId}`,
     DELETE: (formId: string | number, questionId: string | number) => 
       `/forms/${formId}/questions/${questionId}`,
+    BULK_CREATE: (formId: string | number) => `/api/forms/${formId}/questions/bulk`,
   },
   
   // Templates endpoints
@@ -194,7 +222,7 @@ export const API_ENDPOINTS = {
   
   // User endpoints
   USER: {
-    PROFILE: '/user/profile',
+    PROFILE: '/api/profile',
     UPDATE_PROFILE: '/user/profile',
     FORMS: '/user/forms',
     DASHBOARD: '/user/dashboard',
