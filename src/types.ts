@@ -1,6 +1,6 @@
 // Form and Question Types
 export interface Question {
-  id: number;
+  id?: number;
   question_text: string;
   question_type: string;
   is_required: number;
@@ -103,6 +103,23 @@ export interface ApiResponse<T = any> {
   data?: T;
   message?: string;
   error?: string;
+}
+
+// Form Types
+export interface Form {
+  id: number;
+  title: string;
+  description: string;
+  status: 'published' | 'approved' | 'pending' | 'rejected' | 'draft';
+  category: string;
+  updated_at: string;
+  created_at: string;
+  participants_count?: number;
+  views_count?: number;
+  user?: {
+    name: string;
+    email: string;
+  };
 }
 
 // User Types

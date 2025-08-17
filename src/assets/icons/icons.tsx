@@ -91,6 +91,25 @@ const layerIcon = ({ isActive = false }: { isActive?: boolean }) => {
   );
 };
 
+const submissionIcon = ({ isActive = false }: { isActive?: boolean }) => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M17.6569 9.87879L17.6577 17.4763C17.6587 17.5951 17.6115 17.7023 17.5343 17.7795M9.87868 17.657L17.231 17.9029C17.3499 17.904 17.4571 17.8567 17.5343 17.7795M17.5343 17.7795L6.22058 6.46582"
+        stroke={isActive ? "#006738" : "#5D6F67"}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
 const homeIcon = ({ isActive = false }: { isActive?: boolean }) => {
   return (
     <svg
@@ -167,9 +186,9 @@ const floatingButtonIcon = () => {
           width="120"
           height="120"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -220,9 +239,9 @@ const floatingButtonIcon = () => {
           width="37.58"
           height="40.01"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -273,9 +292,9 @@ const floatingButtonIcon = () => {
           width="22.58"
           height="25.01"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -326,9 +345,9 @@ const floatingButtonIcon = () => {
           width="18.58"
           height="21.01"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -380,8 +399,8 @@ const floatingButtonIcon = () => {
           y2="56"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#006738" />
-          <stop offset="1" stop-color="#007A43" />
+          <stop stopColor="#006738" />
+          <stop offset="1" stopColor="#007A43" />
         </linearGradient>
       </defs>
     </svg>
@@ -410,6 +429,7 @@ export {
   fileIcon,
   inboxIcon,
   layerIcon,
+  submissionIcon,
   homeIcon,
   floatingButtonIcon,
 };
