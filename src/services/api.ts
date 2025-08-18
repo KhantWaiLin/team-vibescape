@@ -132,6 +132,12 @@ class ApiService {
     return response.data;
   }
 
+  // POST request without data (for simple requests)
+  async postWithoutData<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await axiosInstance.post<T>(endpoint, undefined, config);
+    return response.data;
+  }
+
   // PUT request
   async put<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     const response = await axiosInstance.put<T>(endpoint, data, config);
@@ -164,7 +170,7 @@ class ApiService {
 export const apiService = new ApiService();
 
 // Export individual methods for convenience
-export const { get, post, put, delete: del, patch } = apiService;
+export const { get, post, postWithoutData, put, delete: del, patch } = apiService;
 
 // API Endpoints
 export const API_ENDPOINTS = {
@@ -186,6 +192,7 @@ export const API_ENDPOINTS = {
     DELETE: (id: string | number) => `/forms/${id}`,
     PUBLISH: (id: string | number) => `/forms/${id}/publish`,
     UNPUBLISH: (id: string | number) => `/forms/${id}/unpublish`,
+    SUBMIT_TO_ADMIN: (id: string | number) => `/api/forms/${id}/submit`,
   },
 
   AI:{

@@ -13,6 +13,8 @@ export { default as FormPreview } from './FormPreview';
 export { FormViewer, QuestionBlock } from './form-display';
 export * from './form-display/inputs';
 export { default as StatCard } from './StatCard';
+export { default as InfoCard } from './InfoCard';
+export { default as SubmissionCard } from './SubmissionCard';
 export { default as FormCard } from './FormCard';
 export { default as CategoryDropdown } from './CategoryDropdown';
 export { default as TemplateCard } from './TemplateCard';

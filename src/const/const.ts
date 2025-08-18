@@ -101,3 +101,10 @@ export const layoutBlocks = [
     question_type: "divider",
   },
 ];
+
+export const filterTabs = [
+  { id: "published", label: "Published", count: 4 },
+  { id: "approved", label: "Approved", count: 2 },
+  { id: "pending", label: "Pending", count: 4 },
+  { id: "rejected", label: "Rejected", count: 1 },
+];

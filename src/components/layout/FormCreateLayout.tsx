@@ -17,6 +17,7 @@ interface FormCreateLayoutProps {
   onFormDescriptionChange?: (description: string) => void;
   onPreviewClick?: () => void;
   onSaveDraftClick?: () => void;
+  onSubmitClick?: () => void;
 }
 
 const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
@@ -31,6 +32,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
   onFormDescriptionChange,
   onPreviewClick,
   onSaveDraftClick,
+  onSubmitClick,
 }) => {
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
@@ -75,7 +77,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
         onPreviewClick={
           onPreviewClick || (() => console.log("Preview clicked"))
         }
-        onSubmitClick={() => console.log("Submit to Admin clicked")}
+        onSubmitClick={onSubmitClick || (() => console.log("Submit to Admin clicked"))}
         onSaveDraftClick={onSaveDraftClick || (() => console.log("Save draft clicked"))}
       />
 

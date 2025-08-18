@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { chooseNavItems } from "../../utils/navUtils";
@@ -11,9 +11,13 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
   const location = useLocation();
   const { isAdmin } = useAuth();
+  const [navItems, setNavItems] = useState<any[]>([]);
   
-  // Choose navigation items based on admin status
-  const navItems = chooseNavItems(isAdmin());
+  // Update navigation items when user admin status changes
+  useEffect(() => {
+    const items = chooseNavItems(isAdmin());
+    setNavItems(items);
+  }, [isAdmin()]);
   
   const isActive = (path: string) => {
     return location.pathname === path;

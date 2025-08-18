@@ -6,24 +6,18 @@ import {
   FilterTabs,
   FormCard,
 } from "../components";
+import { filterTabs } from "../const/const";
 
 const MyForm: React.FC = () => {
   const [activeTab, setActiveTab] = useState("published");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const navigate = useNavigate();
 
-  const filterTabs = [
-    { id: "published", label: "Published", count: 4 },
-    { id: "approved", label: "Approved", count: 2 },
-    { id: "pending", label: "Pending", count: 4 },
-    { id: "rejected", label: "Rejected", count: 1 },
-  ];
-
   const sampleForms = [
     {
       id: 1,
       title: "Networking Event Sign-Up",
-      statusLabel: "Published",
+      statusLabel: "published" as const,
       statusColor: "bg-[var(--color-green-100)] text-[var(--color-green-600)]",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.",
@@ -35,7 +29,7 @@ const MyForm: React.FC = () => {
     {
       id: 2,
       title: "Panel Discussion RSVP",
-      statusLabel: "Published",
+      statusLabel: "published" as const,
       statusColor: "bg-[var(--color-green-100)] text-[var(--color-green-600)]",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.",
@@ -56,7 +50,7 @@ const MyForm: React.FC = () => {
     {
       id: 4,
       title: "Event Registration",
-      statusLabel: "Draft",
+      statusLabel: "draft" as const,
       statusColor: "bg-[var(--color-black-100)] text-[var(--color-black-600)]",
       description:
         "Event registration form with multiple ticket types and payment options.",
