@@ -8,7 +8,7 @@
  * - Status icons and visual indicators
  */
 
-export type FormStatus = 'published' | 'approved' | 'pending' | 'rejected' | 'draft';
+export type FormStatus = 'published' | 'approved' | 'pending_approval' | 'rejected' | 'draft';
 
 /**
  * Get the CSS classes for styling a status badge
@@ -29,7 +29,7 @@ export const getStatusColor = (status: FormStatus): string => {
       return 'bg-emerald-100 text-emerald-700 border-emerald-200';
     case 'approved':
       return 'bg-blue-100 text-blue-700 border-blue-200';
-    case 'pending':
+    case 'pending_approval':
       return 'bg-amber-100 text-amber-700 border-amber-200';
     case 'rejected':
       return 'bg-red-100 text-red-700 border-red-200';
@@ -47,7 +47,15 @@ export const getStatusColor = (status: FormStatus): string => {
  * @returns Capitalized status label
  */
 export const getStatusLabel = (status: FormStatus): string => {
-  return status.charAt(0).toUpperCase() + status.slice(1);
+  const statusMap: Record<FormStatus, string> = {
+    'published': 'Published',
+    'approved': 'Approved',
+    'pending_approval': 'Pending',
+    'rejected': 'Rejected',
+    'draft': 'Draft'
+  };
+  
+  return statusMap[status] || status.charAt(0).toUpperCase() + status.slice(1);
 };
 
 /**
@@ -60,7 +68,7 @@ export const getStatusPriority = (status: FormStatus): number => {
   const priorities: Record<FormStatus, number> = {
     'published': 1,
     'approved': 2,
-    'pending': 3,
+    'pending_approval': 3,
     'draft': 4,
     'rejected': 5,
   };
@@ -79,7 +87,7 @@ export const getStatusIcon = (status: FormStatus): string => {
       return '✅'; // Check mark
     case 'approved':
       return '👍'; // Thumbs up
-    case 'pending':
+    case 'pending_approval':
       return '⏳'; // Hourglass
     case 'rejected':
       return '❌'; // X mark
@@ -97,7 +105,7 @@ export const getStatusIcon = (status: FormStatus): string => {
  * @returns True if the status can be changed
  */
 export const isStatusActionable = (status: FormStatus): boolean => {
-  return ['draft', 'pending'].includes(status);
+  return ['draft', 'pending_approval'].includes(status);
 };
 
 /**
@@ -109,8 +117,8 @@ export const isStatusActionable = (status: FormStatus): boolean => {
 export const getNextPossibleStatuses = (currentStatus: FormStatus): FormStatus[] => {
   switch (currentStatus) {
     case 'draft':
-      return ['pending'];
-    case 'pending':
+      return ['pending_approval'];
+    case 'pending_approval':
       return ['approved', 'rejected'];
     case 'approved':
       return ['published'];

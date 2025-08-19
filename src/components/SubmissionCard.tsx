@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getStatusColor,
   getStatusLabel,
@@ -6,6 +7,8 @@ import {
 } from "../utils/statusUtils";
 
 export interface SubmissionCardProps {
+  /** The ID of the form */
+  formId: string;
   /** The title of the form */
   title: string;
   /** The current status of the submission */
@@ -40,6 +43,7 @@ export interface SubmissionCardProps {
  * @example
  * ```tsx
  * <SubmissionCard
+ *   formId="form-001"
  *   title="Webinar Sign-Up Form"
  *   status="pending"
  *   description="Lorem ipsum dolor sit amet consectetur adipisicing elit..."
@@ -53,6 +57,7 @@ export interface SubmissionCardProps {
  * ```
  */
 const SubmissionCard: React.FC<SubmissionCardProps> = ({
+  formId,
   title,
   status,
   description,
@@ -64,6 +69,16 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
   onReject,
   className = "",
 }) => {
+  const navigate = useNavigate();
+
+  const handleReview = () => {
+    if (onReview) {
+      onReview();
+    }
+    // Navigate to form view page
+    navigate(`/form/${formId}`);
+  };
+
   return (
     <div
       className={`bg-white rounded-2xl border border-[var(--color-light-border)] shadow-sm p-6 ${className}`}
@@ -126,7 +141,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
       <div className="flex items-center gap-3">
         {/* Review Button */}
         <button
-          onClick={onReview}
+          onClick={handleReview}
           className="inline-flex items-center gap-2 bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
           <svg
@@ -153,7 +168,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 
         {/* Action Icons */}
         <div className="flex items-center gap-2 ml-auto">
-          {onApprove && (
+          {onApprove && status !== "approved" && status !== "published" && (
             <button
               onClick={onApprove}
               className="w-8 h-8 bg-[var(--color-green-100)] hover:bg-[var(--color-green-200)] text-[var(--color-green-600)] rounded-full flex items-center justify-center transition-colors"
@@ -174,7 +189,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
             </button>
           )}
 
-          {onReject && (
+          {onReject && status !== "approved" && status !== "published" && (
             <button
               onClick={onReject}
               className="w-8 h-8 bg-[var(--color-red-100)] hover:bg-[var(--color-red-200)] text-[var(--color-red-600)] rounded-full flex items-center justify-center transition-colors"

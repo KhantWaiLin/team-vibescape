@@ -16,6 +16,7 @@ const MyForm = React.lazy(() => import("../pages/MyForm"));
 const Templates = React.lazy(() => import("../pages/Templates"));
 const CreateForm = React.lazy(() => import("../pages/CreateForm"));
 const Submission = React.lazy(() => import("../pages/Submission"));
+const FormReview = React.lazy(() => import("../pages/FormReview"));
 
 // Define the route configuration
 export const routes: RouteObject[] = [
@@ -131,6 +132,16 @@ export const routes: RouteObject[] = [
           </ProtectedRoute>
         </Suspense>
       </Layout>
+    ),
+  },
+  {
+    path: "/form/:formId",
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <ProtectedRoute>
+          <FormReview />
+        </ProtectedRoute>
+      </Suspense>
     ),
   },
   {

@@ -1,15 +1,15 @@
-import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { config } from '../utils/config';
-import { getAuthCookie, removeAuthCookie } from '../utils/cookieUtils';
+import axios from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { config } from "../utils/config";
+import { getAuthCookie, removeAuthCookie } from "../utils/cookieUtils";
 
 // API Configuration
 const API_BASE_URL = config.baseUrl;
 
-console.log('🔧 API Service Configuration:', {
+console.log("🔧 API Service Configuration:", {
   baseUrl: API_BASE_URL,
   environment: config.environment,
-  mode: config.mode
+  mode: config.mode,
 });
 
 // Create axios instance
@@ -18,9 +18,9 @@ const axiosInstance: AxiosInstance = axios.create({
   timeout: 10000, // 10 seconds
   withCredentials: true, // Include cookies for CSRF
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest', // Laravel expects this
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "X-Requested-With": "XMLHttpRequest", // Laravel expects this
   },
 });
 
@@ -35,12 +35,12 @@ export const verifyAuthToken = async (): Promise<boolean> => {
   } catch (error: any) {
     const status = error?.response?.status;
     if (status === 401) {
-      removeAuthCookie('authToken');
-      removeAuthCookie('authUser');
+      removeAuthCookie("authToken");
+      removeAuthCookie("authUser");
       return false;
     }
     // For other errors (network/5xx), don't block the user; treat token as still valid
-    console.warn('Token verification non-auth error; allowing access:', status);
+    console.warn("Token verification non-auth error; allowing access:", status);
     return true;
   }
 };
@@ -49,26 +49,26 @@ export const verifyAuthToken = async (): Promise<boolean> => {
 axiosInstance.interceptors.request.use(
   async (config) => {
     // Add Bearer token if available
-    const authToken = getAuthCookie('authToken');
+    const authToken = getAuthCookie("authToken");
     if (authToken) {
-      config.headers['Authorization'] = `Bearer ${authToken}`;
-      console.log('🔑 Added Bearer token to request');
+      config.headers["Authorization"] = `Bearer ${authToken}`;
+      console.log("🔑 Added Bearer token to request");
     }
 
     // For non-GET requests, ensure we have CSRF token
-    if (config.method !== 'get') {
+    if (config.method !== "get") {
       try {
         // Get CSRF token from Sanctum
         await axios.get(`${config.baseURL}/sanctum/csrf-cookie`, {
-          withCredentials: true
+          withCredentials: true,
         });
-        console.log('🛡️ CSRF token obtained');
+        console.log("🛡️ CSRF token obtained");
       } catch (error) {
-        console.warn('⚠️ Could not get CSRF token:', error);
+        console.warn("⚠️ Could not get CSRF token:", error);
       }
     }
 
-    console.log('🚀 API Request:', {
+    console.log("🚀 API Request:", {
       method: config.method?.toUpperCase(),
       url: config.url,
       baseURL: config.baseURL,
@@ -79,7 +79,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('❌ Request interceptor error:', error);
+    console.error("❌ Request interceptor error:", error);
     return Promise.reject(error);
   }
 );
@@ -87,7 +87,7 @@ axiosInstance.interceptors.request.use(
 // Response interceptor for better error handling
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log('✅ API Response:', {
+    console.log("✅ API Response:", {
       status: response.status,
       url: response.config.url,
       data: response.data,
@@ -95,7 +95,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.error('❌ API Error:', {
+    console.error("❌ API Error:", {
       status: error.response?.status,
       message: error.message,
       url: error.config?.url,
@@ -104,14 +104,14 @@ axiosInstance.interceptors.response.use(
 
     // Handle common errors
     if (error.response?.status === 401) {
-      console.log('🔒 Unauthorized - clearing auth data');
-      removeAuthCookie('authToken');
-      removeAuthCookie('authUser');
+      console.log("🔒 Unauthorized - clearing auth data");
+      removeAuthCookie("authToken");
+      removeAuthCookie("authUser");
       // You can redirect to login here if needed
     }
 
     if (error.response?.status === 422) {
-      console.log('📝 Validation error:', error.response.data);
+      console.log("📝 Validation error:", error.response.data);
     }
 
     return Promise.reject(error);
@@ -127,19 +127,30 @@ class ApiService {
   }
 
   // POST request
-  async post<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(
+    endpoint: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await axiosInstance.post<T>(endpoint, data, config);
     return response.data;
   }
 
   // POST request without data (for simple requests)
-  async postWithoutData<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
+  async postWithoutData<T>(
+    endpoint: string,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await axiosInstance.post<T>(endpoint, undefined, config);
     return response.data;
   }
 
   // PUT request
-  async put<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async put<T>(
+    endpoint: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await axiosInstance.put<T>(endpoint, data, config);
     return response.data;
   }
@@ -151,17 +162,21 @@ class ApiService {
   }
 
   // PATCH request
-  async patch<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async patch<T>(
+    endpoint: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await axiosInstance.patch<T>(endpoint, data, config);
     return response.data;
   }
 
   // Get auth headers (for backward compatibility)
   getAuthHeaders(): Record<string, string> {
-    const token = getAuthCookie('authToken');
+    const token = getAuthCookie("authToken");
     return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     };
   }
 }
@@ -170,24 +185,31 @@ class ApiService {
 export const apiService = new ApiService();
 
 // Export individual methods for convenience
-export const { get, post, postWithoutData, put, delete: del, patch } = apiService;
+export const {
+  get,
+  post,
+  postWithoutData,
+  put,
+  delete: del,
+  patch,
+} = apiService;
 
 // API Endpoints
 export const API_ENDPOINTS = {
   // Auth endpoints
   AUTH: {
-    LOGIN: '/api/login',
-    REGISTER: '/api/register',
-    LOGOUT: '/api/logout',
-    REFRESH: '/api/refresh',
+    LOGIN: "/api/login",
+    REGISTER: "/api/register",
+    LOGOUT: "/api/logout",
+    REFRESH: "/api/refresh",
   },
-  
+
   // Forms endpoints
   FORMS: {
-    LIST: '/api/forms',
-    CREATE: '/api/forms',
-    RECENT: '/api/forms/recent',
-    SHOW: (id: string | number) => `/forms/${id}`,
+    LIST: "/api/forms",
+    CREATE: "/api/forms",
+    RECENT: "/api/forms/recent",
+    DETAIL: (id: string | number) => `/api/forms/${id}`,
     UPDATE: (id: string | number) => `/forms/${id}`,
     DELETE: (id: string | number) => `/forms/${id}`,
     PUBLISH: (id: string | number) => `/forms/${id}/publish`,
@@ -195,43 +217,73 @@ export const API_ENDPOINTS = {
     SUBMIT_TO_ADMIN: (id: string | number) => `/api/forms/${id}/submit`,
   },
 
-  AI:{
-    GENERATE: '/api/forms/template-generate'
+  ADMIN:{
+    APPROVED: (id:string | number) => `api/forms/${id}/approve`,
+    REJECT: (id:string | number) => `api/forms/${id}/reject`,
   },
-  
+
+  SEARCH: {
+    SEARCH: ({
+      keyword,
+      status,
+      page,
+      per_page,
+    }: {
+      keyword?: string;
+      status?: string;
+      page?: number;
+      per_page?: number;
+    }) => {
+      const params = new URLSearchParams();
+
+      if (keyword) params.append("q", keyword);
+      if (status) params.append("status", status);
+      if (per_page) params.append("per_page", per_page.toString());
+      if (page) params.append("page", page.toString());
+
+      const queryString = params.toString();
+      return `/api/forms/search${queryString ? `?${queryString}` : ""}`;
+    },
+  },
+
+  AI: {
+    GENERATE: "/api/forms/template-generate",
+  },
+
   // Questions endpoints
   QUESTIONS: {
     LIST: (formId: string | number) => `/forms/${formId}/questions`,
     CREATE: (formId: string | number) => `/forms/${formId}/questions`,
-    SHOW: (formId: string | number, questionId: string | number) => 
+    SHOW: (formId: string | number, questionId: string | number) =>
       `/forms/${formId}/questions/${questionId}`,
-    UPDATE: (formId: string | number, questionId: string | number) => 
+    UPDATE: (formId: string | number, questionId: string | number) =>
       `/forms/${formId}/questions/${questionId}`,
-    DELETE: (formId: string | number, questionId: string | number) => 
+    DELETE: (formId: string | number, questionId: string | number) =>
       `/forms/${formId}/questions/${questionId}`,
-    BULK_CREATE: (formId: string | number) => `/api/forms/${formId}/questions/bulk`,
+    BULK_CREATE: (formId: string | number) =>
+      `/api/forms/${formId}/questions/bulk`,
   },
-  
+
   // Templates endpoints
   TEMPLATES: {
-    LIST: '/templates',
+    LIST: "/templates",
     SHOW: (id: string | number) => `/templates/${id}`,
     USE: (id: string | number) => `/templates/${id}/use`,
   },
-  
+
   // Responses endpoints
   RESPONSES: {
     LIST: (formId: string | number) => `/forms/${formId}/responses`,
-    SHOW: (formId: string | number, responseId: string | number) => 
+    SHOW: (formId: string | number, responseId: string | number) =>
       `/forms/${formId}/responses/${responseId}`,
     CREATE: (formId: string | number) => `/forms/${formId}/responses`,
   },
-  
+
   // User endpoints
   USER: {
-    PROFILE: '/api/profile',
-    UPDATE_PROFILE: '/user/profile',
-    FORMS: '/user/forms',
-    DASHBOARD: '/user/dashboard',
+    PROFILE: "/api/profile",
+    UPDATE_PROFILE: "/user/profile",
+    FORMS: "/user/forms",
+    DASHBOARD: "/user/dashboard",
   },
 } as const;

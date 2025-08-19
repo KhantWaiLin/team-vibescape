@@ -1,107 +1,101 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CategoryDropdown,
   FilterTabs,
   InfoCard,
   SearchBar,
   SubmissionCard,
+  Pagination,
 } from "../components";
 import { fileIcon, submissionIcon } from "../assets/icons/icons";
 import { type FormStatus } from "../utils/statusUtils";
-import { filterTabs } from "../const/const";
+import { API_ENDPOINTS, apiService } from "../services/api";
+import { filterTabs, getApiStatus } from "../const/const";
 
-const sampleForms = [
-  {
-    id: 1,
-    title: "Networking Event Sign-Up",
-    statusLabel: "published" as const,
-    statusColor: "bg-[var(--color-green-100)] text-[var(--color-green-600)]",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.",
-    category: "Human Resources",
-    editedText: "Edited 1 hr ago",
-    participantsCount: 15,
-    viewsCount: 40,
-  },
-  {
-    id: 2,
-    title: "Panel Discussion RSVP",
-    statusLabel: "published" as const,
-    statusColor: "bg-[var(--color-green-100)] text-[var(--color-green-600)]",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.",
-    category: "Finance",
-    editedText: "Edited 20 min ago",
-    participantsCount: 25,
-    viewsCount: 45,
-  },
-  {
-    id: 3,
-    title: "Simple Contact Form",
-    description:
-      "Basic contact form for general inquiries and feedback collection.",
-    category: "General",
-    editedText: "Edited 3 days ago",
-    // No statusLabel, participantsCount, or viewsCount - shows as basic form card
-  },
-  {
-    id: 4,
-    title: "Event Registration",
-    statusLabel: "draft" as const,
-    statusColor: "bg-[var(--color-black-100)] text-[var(--color-black-600)]",
-    description:
-      "Event registration form with multiple ticket types and payment options.",
-    category: "Events",
-    editedText: "Edited 2 days ago",
-    // Only participants count, no views
-    participantsCount: 8,
-  },
-];
-
-// Sample submission data for SubmissionCard
-const submissions = [
-  {
-    id: 1,
-    title: "Webinar Sign-Up Form",
-    status: "pending" as FormStatus,
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.",
-    fieldCount: 4,
-    assignee: { name: "Sofia" },
-    category: "Sales",
-  },
-  {
-    id: 2,
-    title: "Customer Feedback Survey",
-    status: "approved" as FormStatus,
-    description:
-      "Customer satisfaction survey with rating questions and open-ended feedback collection.",
-    fieldCount: 8,
-    assignee: { name: "Alex" },
-    category: "Marketing",
-  },
-  {
-    id: 3,
-    title: "Employee Onboarding Form",
-    status: "pending" as FormStatus,
-    description:
-      "Comprehensive onboarding form for new employees including personal information and preferences.",
-    fieldCount: 12,
-    assignee: { name: "Maria" },
-    category: "Human Resources",
-  },
-];
+// API Response Types
 
 const Submission: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("pending");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [apiData, setApiData] = useState<any | null>(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const isInitialMount = useRef(true);
+
+  // API call using the search endpoint
+  const fetchForms = async (
+    page: number = 1,
+    per_page: number = 10,
+    search?: string,
+    status?: string
+  ) => {
+    setLoading(true);
+    try {
+      const response: any = await apiService.get(
+        API_ENDPOINTS.SEARCH.SEARCH({
+          keyword: search,
+          page: page,
+          per_page: per_page,
+          status: status,
+        })
+      );
+
+      setApiData(response);
+    } catch (error) {
+      console.error("Error fetching forms:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    if (isInitialMount.current) {
+      fetchForms(1, 10, "", getApiStatus(activeTab));
+      isInitialMount.current = false;
+    }
+  }, []);
+
+  // Handle tab changes
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      setCurrentPage(1);
+      fetchForms(1, 10, searchKeyword, getApiStatus(activeTab));
+    }
+  }, [activeTab]);
+
+  // Handle search changes
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      setCurrentPage(1);
+      fetchForms(1, 10, searchKeyword, getApiStatus(activeTab));
+    }
+  }, [searchKeyword]);
+
+  // Handle page changes
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      fetchForms(currentPage, 10, searchKeyword, getApiStatus(activeTab));
+    }
+  }, [currentPage]);
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSearch = (keyword: string) => {
+    setSearchKeyword(keyword);
+  };
+
   const handleReview = (submissionId: number) => {
     console.log("Review submission:", submissionId);
+    
   };
 
   const handleApprove = (submissionId: number) => {
@@ -111,6 +105,19 @@ const Submission: React.FC = () => {
   const handleReject = (submissionId: number) => {
     console.log("Reject submission:", submissionId);
   };
+
+  // Transform API data to SubmissionCard format
+  const submissions =
+    apiData?.data.map((form: any) => ({
+      id: form.id,
+      formId: form.slug,
+      title: form.title,
+      status: form.status as FormStatus,
+      description: form.description,
+      fieldCount: Math.floor(Math.random() * 10) + 3, // Mock field count
+      assignee: { name: form.username },
+      category: "General", // Mock category
+    })) || [];
 
   return (
     <div className="min-h-screen">
@@ -125,7 +132,7 @@ const Submission: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             <InfoCard
               label="Total Submission"
-              value={10}
+              value={apiData?.meta.total || 0}
               icon={submissionIcon({})}
               onClick={() => console.log("Total Submission clicked")}
             />
@@ -156,27 +163,53 @@ const Submission: React.FC = () => {
               <SearchBar
                 placeholder="Search Forms"
                 className="w-full sm:w-64"
+                onSearch={handleSearch}
               />
             </div>
           </div>
 
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-green-600)]"></div>
+            </div>
+          )}
+
           {/* Submissions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {submissions.map((submission) => (
-              <SubmissionCard
-                key={submission.id}
-                title={submission.title}
-                status={submission.status}
-                description={submission.description}
-                fieldCount={submission.fieldCount}
-                assignee={submission.assignee}
-                category={submission.category}
-                onReview={() => handleReview(submission.id)}
-                onApprove={() => handleApprove(submission.id)}
-                onReject={() => handleReject(submission.id)}
-              />
-            ))}
-          </div>
+          {!loading && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {submissions.map((submission: any) => (
+                  <SubmissionCard
+                    key={submission.id}
+                    formId={submission.id}
+                    title={submission.title}
+                    status={submission.status}
+                    description={submission.description}
+                    fieldCount={submission.fieldCount}
+                    assignee={submission.assignee}
+                    category={submission.category}
+                    onReview={() => handleReview(submission.id)}
+                    onApprove={() => handleApprove(submission.id)}
+                    onReject={() => handleReject(submission.id)}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {apiData && (
+                <div className="mt-8">
+                  <Pagination
+                    currentPage={currentPage}
+                    lastPage={apiData.meta.last_page}
+                    total={apiData.meta.total}
+                    perPage={apiData.meta.per_page}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

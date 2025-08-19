@@ -54,6 +54,8 @@ export interface FloatingButtonProps {
 export interface SearchBarProps {
   placeholder?: string;
   className?: string;
+  onSearch?: (keyword: string) => void;
+  debounceMs?: number;
 }
 
 export interface QuestionTypeButtonProps {
@@ -110,7 +112,7 @@ export interface Form {
   id: number;
   title: string;
   description: string;
-  status: 'published' | 'approved' | 'pending' | 'rejected' | 'draft';
+  status: 'published' | 'approved' | 'pending_approval' | 'rejected' | 'draft';
   category: string;
   updated_at: string;
   created_at: string;

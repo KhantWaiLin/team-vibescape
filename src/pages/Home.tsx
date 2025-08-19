@@ -223,7 +223,7 @@ const Home: React.FC = () => {
                   title={form.title}
                   statusLabel={form.status}
                   description={form.description}
-                  category={form.category}
+                  category={form.category || "General"}
                   onEdit={() => {}}
                   editedText={formatTimeAgo(form.updated_at)}
                   statusColor={getStatusColor(form.status)}

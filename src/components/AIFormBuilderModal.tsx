@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PopupModal from './PopupModal';
-import { API_ENDPOINTS, apiService } from '../services/api';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PopupModal from "./PopupModal";
+import { API_ENDPOINTS, apiService } from "../services/api";
+import toast from "react-hot-toast";
 
 interface AIFormBuilderModalProps {
   isOpen: boolean;
@@ -25,8 +25,11 @@ interface AIFormResponse {
   };
 }
 
-const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({ isOpen, onClose }) => {
-  const [formDescription, setFormDescription] = useState<string>('');
+const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const [formDescription, setFormDescription] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -51,17 +54,19 @@ const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({ isOpen, onClose
     "Create a signup form for newsletters",
     "Build a registration form for workshops",
     "Make a feedback form for service quality",
-    "Design a survey for market research"
+    "Design a survey for market research",
   ];
 
   const handleNewSuggestion = () => {
-    const randomIndex = Math.floor(Math.random() * commonFormSuggestions.length);
+    const randomIndex = Math.floor(
+      Math.random() * commonFormSuggestions.length
+    );
     setFormDescription(commonFormSuggestions[randomIndex]);
   };
 
   const handleBuildForm = async () => {
     if (!formDescription.trim()) {
-      toast.error('Please enter a form description');
+      toast.error("Please enter a form description");
       return;
     }
 
@@ -70,27 +75,28 @@ const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({ isOpen, onClose
       // Step 1: Generate AI form structure
       const aiResponse = await apiService.post<AIFormResponse>(
         API_ENDPOINTS.AI.GENERATE, // Replace with your actual AI endpoint
-        { prompt : formDescription },
+        { prompt: formDescription },
         apiService.getAuthHeaders()
       );
 
       if (aiResponse.code !== 200) {
-        throw new Error(aiResponse.message || 'Failed to generate form');
+        throw new Error(aiResponse.message || "Failed to generate form");
       }
 
       const { title, description, fields } = aiResponse.data;
 
       // Step 2: Save the form first
-      const formResponse = await apiService.post(
+      const formResponse: any = await apiService.post(
         API_ENDPOINTS.FORMS.CREATE,
         { title, description },
         apiService.getAuthHeaders()
       );
-
       // Step 3: Navigate to CreateForm with the generated data
-      navigate('/create-form', {
+
+      navigate("/create-form", {
         state: {
           data: {
+            id: formResponse?.data?.id,
             title,
             description,
             response: formResponse,
@@ -107,18 +113,26 @@ const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({ isOpen, onClose
         },
       });
 
-      toast.success('AI form generated and saved successfully!');
+      toast.success("AI form generated and saved successfully!");
       onClose();
     } catch (error: any) {
-      console.error('Failed to generate AI form:', error);
-      toast.error(error.message || 'Failed to generate AI form. Please try again.');
+      console.error("Failed to generate AI form:", error);
+      toast.error(
+        error.message || "Failed to generate AI form. Please try again."
+      );
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <PopupModal isOpen={isOpen} onClose={onClose} size="3xl" maxHeight="60vh" showHeader={false}> 
+    <PopupModal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="3xl"
+      maxHeight="60vh"
+      showHeader={false}
+    >
       <div className="space-y-6 p-6">
         {/* Header with Beta tag */}
         <div className="text-center">
@@ -148,7 +162,7 @@ const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({ isOpen, onClose
 
           {/* Action Buttons */}
           <div className="flex items-center justify-between">
-            <button 
+            <button
               onClick={handleNewSuggestion}
               disabled={isGenerating}
               className="flex items-center gap-2 px-4 py-2 border border-[var(--color-light-border)] bg-white text-[var(--color-black-700)] rounded-lg hover:bg-[var(--color-light-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -169,13 +183,13 @@ const AIFormBuilderModal: React.FC<AIFormBuilderModalProps> = ({ isOpen, onClose
               New suggestion
             </button>
 
-            <button 
+            <button
               onClick={handleBuildForm}
               disabled={!formDescription.trim() || isGenerating}
               className={`flex items-center gap-2 px-6 py-2 rounded-lg transition-colors font-medium ${
                 formDescription.trim() && !isGenerating
-                  ? 'bg-[var(--color-green-600)] text-white hover:bg-[var(--color-green-700)]' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? "bg-[var(--color-green-600)] text-white hover:bg-[var(--color-green-700)]"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
               {isGenerating ? (
