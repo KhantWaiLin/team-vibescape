@@ -217,7 +217,7 @@ const Home: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {recentForms.map((form) => (
+              {recentForms.map((form: any) => (
                 <FormCard
                   key={form.id}
                   title={form.title}
@@ -229,6 +229,7 @@ const Home: React.FC = () => {
                   statusColor={getStatusColor(form.status)}
                   participantsCount={form.participants_count}
                   viewsCount={form.views_count}
+                  username={form.username}
                 />
               ))}
             </div>

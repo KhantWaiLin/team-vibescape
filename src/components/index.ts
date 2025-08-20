@@ -23,3 +23,4 @@ export { default as FilterTabs } from './FilterTabs';
 export { default as AIFormBuilderModal } from './AIFormBuilderModal';
 export { default as ProtectedRoute } from './ProtectedRoute';
 export { default as StatusBadge } from './StatusBadge';
+export { default as DataTable } from './DataTable';

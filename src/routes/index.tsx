@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { Layout } from "../components/layout/index";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ProtectedRoute from "../components/ProtectedRoute";
+import SubmissionInsightLayout from "../components/layout/SubmissionInsightLayout";
 
 // Lazy load components
 const Home = React.lazy(() => import("../pages/Home"));
@@ -16,6 +17,9 @@ const MyForm = React.lazy(() => import("../pages/MyForm"));
 const Templates = React.lazy(() => import("../pages/Templates"));
 const CreateForm = React.lazy(() => import("../pages/CreateForm"));
 const Submission = React.lazy(() => import("../pages/Submission"));
+const SubmissionInsight = React.lazy(
+  () => import("../pages/SubmissionInsight")
+);
 const FormReview = React.lazy(() => import("../pages/FormReview"));
 const PublicForm = React.lazy(() => import("../pages/PublicForm"));
 
@@ -143,6 +147,18 @@ export const routes: RouteObject[] = [
           <FormReview />
         </ProtectedRoute>
       </Suspense>
+    ),
+  },
+  {
+    path: "/form/submission/:formId",
+    element: (
+      <SubmissionInsightLayout>
+        <Suspense fallback={<LoadingSpinner />}>
+          <ProtectedRoute>
+            <SubmissionInsight />
+          </ProtectedRoute>
+        </Suspense>
+      </SubmissionInsightLayout>
     ),
   },
   {

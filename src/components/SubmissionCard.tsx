@@ -118,7 +118,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 					{/* Assignee */}
 					<div className="flex items-center w-full justify-between gap-2">
 						<div className="flex items-center gap-2">
-							<div className="w-8 h-8 bg-[var(--color-green-100)] rounded-full flex items-center justify-center">
+							<div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-green-600)] text-[var(--color-light-text-inverse)]">
 								{assignee.avatar ? (
 									<img
 										src={assignee.avatar}
@@ -126,7 +126,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 										className="w-6 h-6 rounded-full object-cover"
 									/>
 								) : (
-									<span className="text-[var(--color-green-600)] text-sm font-semibold">
+									<span className="text-[var(--color-light-text-inverse)] text-sm font-semibold">
 										{assignee.name.charAt(0).toUpperCase()}
 									</span>
 								)}

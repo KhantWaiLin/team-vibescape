@@ -6,11 +6,13 @@ import type { TemplateForm } from "../const/templateData";
 export interface TemplateCardProps {
   template: TemplateForm;
   onUseTemplate: (template: TemplateForm) => void;
+  username?: string;
 }
 
 const TemplateCard: React.FC<TemplateCardProps> = ({
   template,
   onUseTemplate,
+  username,
 }) => {
   return (
     <div className="rounded-2xl border border-[var(--color-light-border)] bg-[var(--color-light-card)] p-6 shadow-sm h-full flex flex-col">
@@ -48,17 +50,29 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-auto flex items-center gap-3">
-        <button 
-          className="flex-1 bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-[var(--color-light-text-inverse)] px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-          onClick={() => onUseTemplate(template)}
-        >
-          <span className="text-lg">+</span>
-          Use Template
-        </button>
-        <button className="p-2 bg-[var(--color-light-surface)] hover:bg-[var(--color-black-100)] border border-[var(--color-light-border)] rounded-lg transition-colors">
-          <img src={eyeIcon} alt="preview" className="w-5 h-5" />
-        </button>
+      <div className="mt-auto flex flex-col gap-3">
+        {/* User Info */}
+        {username && (
+          <div className="flex items-center gap-2 text-sm text-[var(--color-black-500)]">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-green-600)] text-[var(--color-light-text-inverse)]">
+              {username.charAt(0).toUpperCase()}
+            </div>
+            <span>Created by {username}</span>
+          </div>
+        )}
+        
+        <div className="flex items-center gap-3">
+          <button 
+            className="flex-1 bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-[var(--color-light-text-inverse)] px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+            onClick={() => onUseTemplate(template)}
+          >
+            <span className="text-lg">+</span>
+            Use Template
+          </button>
+          <button className="p-2 bg-[var(--color-light-surface)] hover:bg-[var(--color-black-100)] border border-[var(--color-light-border)] rounded-lg transition-colors">
+            <img src={eyeIcon} alt="preview" className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );

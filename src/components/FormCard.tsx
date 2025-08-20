@@ -16,6 +16,7 @@ export interface FormCardProps {
   viewsCount?: number;
   showMetrics?: boolean;
   onEdit?: () => void;
+  username?: string;
 }
 
 const FormCard: React.FC<FormCardProps> = ({
@@ -30,6 +31,7 @@ const FormCard: React.FC<FormCardProps> = ({
   viewsCount,
   showMetrics = true,
   onEdit,
+  username,
 }) => {
   return (
     <div className="rounded-2xl border border-[var(--color-light-border)] bg-[var(--color-light-card)] p-6 shadow-sm h-full flex flex-col">
@@ -60,14 +62,14 @@ const FormCard: React.FC<FormCardProps> = ({
       </p>
       <div className="mt-auto pt-5 flex flex-col gap-4 justify-start">
         <span className="rounded-full border w-fit border-[var(--color-light-border)] bg-[var(--color-light-surface)] px-3 py-1 text-xs text-[var(--color-black-600)]">
-          {category}
+          {category ?? "General"}
         </span>
 
         <div className="flex justify-between">
           {/* User info */}
           <div className="flex items-center gap-2 text-sm text-[var(--color-black-500)]">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-green-600)] text-[var(--color-light-text-inverse)]">
-              U
+              {username ? username.charAt(0).toUpperCase() : "U"}
             </div>
             <span>{editedText}</span>
           </div>

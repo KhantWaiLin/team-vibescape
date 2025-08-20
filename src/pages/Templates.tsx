@@ -107,6 +107,7 @@ const Templates: React.FC = () => {
                   key={template.id}
                   template={template}
                   onUseTemplate={handleUseTemplate}
+                  username={(template as any).owner?.name  || "User"}
                 />
               ))}
             </div>
