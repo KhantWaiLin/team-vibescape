@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FormViewer, LoadingSpinner } from "../components";
+import { FormViewer, LoadingSpinner, PopupModal } from "../components";
 import FormReviewLayout from "../components/layout/FormReviewLayout";
 import { API_ENDPOINTS, apiService } from "../services/api";
 import toast from "react-hot-toast";
@@ -22,6 +22,8 @@ const FormReview: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
     if (formId) {
@@ -59,7 +61,6 @@ const FormReview: React.FC = () => {
       );
 
       // Show success toast
-      // TODO: Add your toast library here
       toast.success("Form approved successfully!");
       console.log("Form approved successfully!");
 
@@ -68,7 +69,6 @@ const FormReview: React.FC = () => {
     } catch (error) {
       console.error("Error approving form:", error);
       // Show error toast
-      // TODO: Add your toast library here
       toast.error("Failed to approve form. Please try again.");
       console.error("Failed to approve form");
     } finally {
@@ -76,31 +76,30 @@ const FormReview: React.FC = () => {
     }
   };
 
-  const handleReject = async () => {
+  const openRejectModal = () => {
+    setRejectReason("");
+    setIsRejectOpen(true);
+  };
+
+  const submitReject = async () => {
     if (!formData) return;
+    if (!rejectReason.trim()) {
+      toast.error("Please provide a rejection reason.");
+      return;
+    }
     setIsProcessing(true);
     try {
-      // TODO: Replace with actual API call
-      // await api.rejectSubmission(formData.id);
-      await apiService.postWithoutData(
+      await apiService.post(
         API_ENDPOINTS.ADMIN.REJECT(formData.id),
+        { comment: rejectReason },
         apiService.getAuthHeaders()
       );
-      console.log("Form rejected:", formData.id);
-
-      // Show success toast
-      // TODO: Add your toast library here
       toast.success("Form rejected successfully!");
-      console.log("Form rejected successfully!");
-
-      // Navigate to submission page
+      setIsRejectOpen(false);
       navigate("/submission");
     } catch (error) {
       console.error("Error rejecting form:", error);
-      // Show error toast
-      // TODO: Add your toast library here
       toast.error("Failed to reject form. Please try again.");
-      console.error("Failed to reject form");
     } finally {
       setIsProcessing(false);
     }
@@ -133,26 +132,69 @@ const FormReview: React.FC = () => {
   }
 
   return (
-    <FormReviewLayout
-      formData={formData}
-      onFormUpdate={(updates) => {
-        if (formData) {
-          setFormData({ ...formData, ...updates });
-        }
-      }}
-      onBack={handleBack}
-      onApprove={handleApprove}
-      onReject={handleReject}
-      isProcessing={isProcessing}
-      isEditing={false}
-    >
-      <FormViewer
-        formTitle={formData.title}
-        formDescription={formData.description}
-        questions={formData.questions}
-        isPreview={true}
-      />
-    </FormReviewLayout>
+    <>
+      <FormReviewLayout
+        formData={formData}
+        onFormUpdate={(updates) => {
+          if (formData) {
+            setFormData({ ...formData, ...updates });
+          }
+        }}
+        onBack={handleBack}
+        onApprove={handleApprove}
+        onReject={openRejectModal}
+        isProcessing={isProcessing}
+        isEditing={false}
+      >
+        <FormViewer
+          formTitle={formData.title}
+          formDescription={formData.description}
+          questions={formData.questions}
+          isPreview={true}
+        />
+      </FormReviewLayout>
+
+      {/* Reject Reason Modal */}
+      <PopupModal
+        isOpen={isRejectOpen}
+        onClose={() => setIsRejectOpen(false)}
+        size="md"
+        showHeader
+      >
+        <div className="p-6">
+          <h3 className="text-lg font-semibold text-[var(--color-black-900)] mb-2">
+            Reject Submission
+          </h3>
+          <p className="text-sm text-[var(--color-black-600)] mb-4">
+            Please provide a reason for rejecting this submission. This will be
+            visible to the submitter.
+          </p>
+          <textarea
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+            className="w-full border border-[var(--color-light-border)] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-400"
+            rows={5}
+            placeholder="Enter your reason here..."
+          />
+
+          <div className="mt-4 flex justify-end gap-3">
+            <button
+              onClick={() => setIsRejectOpen(false)}
+              className="px-4 py-2 rounded-lg border border-[var(--color-light-border)] text-[var(--color-black-700)] hover:bg-[var(--color-light-bg)]"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={submitReject}
+              disabled={isProcessing}
+              className="px-4 py-2 rounded-lg bg-[var(--color-red-600)] hover:bg-[var(--color-red-700)] text-white disabled:opacity-60"
+            >
+              {isProcessing ? "Submitting..." : "Submit Reason"}
+            </button>
+          </div>
+        </div>
+      </PopupModal>
+    </>
   );
 };
 

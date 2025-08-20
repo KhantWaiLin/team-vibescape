@@ -21,6 +21,7 @@ const Submission: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiData, setApiData] = useState<any | null>(null);
   const [searchKeyword, setSearchKeyword] = useState("");
+  // Initialized once to avoid double-call on first render
   const isInitialMount = useRef(true);
 
   // API call using the search endpoint
@@ -49,48 +50,30 @@ const Submission: React.FC = () => {
     }
   };
 
-  // Initial load
+  // Fetch data whenever page, tab, or search changes
   useEffect(() => {
     if (isInitialMount.current) {
-      fetchForms(1, 10, "", getApiStatus(activeTab));
       isInitialMount.current = false;
     }
-  }, []);
-
-  // Handle tab changes
-  useEffect(() => {
-    if (!isInitialMount.current) {
-      setCurrentPage(1);
-      fetchForms(1, 10, searchKeyword, getApiStatus(activeTab));
-    }
-  }, [activeTab]);
-
-  // Handle search changes
-  useEffect(() => {
-    if (!isInitialMount.current) {
-      setCurrentPage(1);
-      fetchForms(1, 10, searchKeyword, getApiStatus(activeTab));
-    }
-  }, [searchKeyword]);
-
-  // Handle page changes
-  useEffect(() => {
-    if (!isInitialMount.current) {
-      fetchForms(currentPage, 10, searchKeyword, getApiStatus(activeTab));
-    }
-  }, [currentPage]);
+    fetchForms(currentPage, 10, searchKeyword, getApiStatus(activeTab));
+  }, [currentPage, activeTab, searchKeyword]);
 
   const handleTabChange = (tabId: string) => {
+    if (tabId === activeTab) return;
     setActiveTab(tabId);
+    if (currentPage !== 1) setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
+    if (page === currentPage) return;
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSearch = (keyword: string) => {
+    if (keyword === searchKeyword) return;
     setSearchKeyword(keyword);
+    if (currentPage !== 1) setCurrentPage(1);
   };
 
   const handleReview = (submissionId: number) => {
@@ -183,6 +166,7 @@ const Submission: React.FC = () => {
                   <SubmissionCard
                     key={submission.id}
                     formId={submission.id}
+                    formUrl={submission?.url_token}
                     title={submission.title}
                     status={submission.status}
                     description={submission.description}

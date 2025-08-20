@@ -212,6 +212,7 @@ export const API_ENDPOINTS = {
     DETAIL: (id: string | number) => `/api/forms/${id}`,
     UPDATE: (id: string | number) => `/forms/${id}`,
     DELETE: (id: string | number) => `/forms/${id}`,
+    PBULIC: (url: string) => `/api/forms/public/${url}`,
     PUBLISH: (id: string | number) => `/forms/${id}/publish`,
     UNPUBLISH: (id: string | number) => `/forms/${id}/unpublish`,
     SUBMIT_TO_ADMIN: (id: string | number) => `/api/forms/${id}/submit`,
