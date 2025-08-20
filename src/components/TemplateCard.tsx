@@ -42,7 +42,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
           </div>
 
           <span className="rounded-full border border-[var(--color-light-border)] bg-[var(--color-light-surface)] px-3 py-1 text-xs text-[var(--color-black-600)]">
-            {template.category}
+            {template.category ?? 'General'}
           </span>
         </div>
       </div>

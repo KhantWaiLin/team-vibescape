@@ -267,7 +267,7 @@ export const API_ENDPOINTS = {
 
   // Templates endpoints
   TEMPLATES: {
-    LIST: "/templates",
+    LIST: "/api/form-templates",
     SHOW: (id: string | number) => `/templates/${id}`,
     USE: (id: string | number) => `/templates/${id}/use`,
   },

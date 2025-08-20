@@ -77,8 +77,12 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
         onPreviewClick={
           onPreviewClick || (() => console.log("Preview clicked"))
         }
-        onSubmitClick={onSubmitClick || (() => console.log("Submit to Admin clicked"))}
-        onSaveDraftClick={onSaveDraftClick || (() => console.log("Save draft clicked"))}
+        onSubmitClick={
+          onSubmitClick || (() => console.log("Submit to Admin clicked"))
+        }
+        onSaveDraftClick={
+          onSaveDraftClick || (() => console.log("Save draft clicked"))
+        }
       />
 
       {/* Left Sidebar - Question types and tools */}

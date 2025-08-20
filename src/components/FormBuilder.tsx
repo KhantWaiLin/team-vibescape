@@ -11,16 +11,16 @@ interface FormBuilderProps {
   formDescription?: string;
 }
 
-const FormBuilder: React.FC<FormBuilderProps> = ({ 
-  questions, 
-  onQuestionsChange, 
-  selectedQuestion, 
+const FormBuilder: React.FC<FormBuilderProps> = ({
+  questions,
+  onQuestionsChange,
+  selectedQuestion,
   onQuestionSelect,
   formTitle = "Untitled Form",
-  formDescription = ""
+  formDescription = "",
 }) => {
   const updateQuestion = (updatedQuestion: Question) => {
-    const updatedQuestions = questions.map(q => {
+    const updatedQuestions = questions.map((q) => {
       if (q.id !== undefined && updatedQuestion.id !== undefined) {
         return q.id === updatedQuestion.id ? updatedQuestion : q;
       }
@@ -28,17 +28,22 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
       return q === updatedQuestion ? updatedQuestion : q;
     });
     onQuestionsChange(updatedQuestions);
-    
+
     // Update selected question if it's the one being updated
-    if (selectedQuestion && selectedQuestion.id !== undefined && updatedQuestion.id !== undefined && selectedQuestion.id === updatedQuestion.id) {
+    if (
+      selectedQuestion &&
+      selectedQuestion.id !== undefined &&
+      updatedQuestion.id !== undefined &&
+      selectedQuestion.id === updatedQuestion.id
+    ) {
       onQuestionSelect(updatedQuestion);
     }
   };
 
   const deleteQuestion = (id: number) => {
-    const updatedQuestions = questions.filter(q => q.id !== id);
+    const updatedQuestions = questions.filter((q) => q.id !== id);
     onQuestionsChange(updatedQuestions);
-    
+
     // Clear selection if the deleted question was selected
     if (selectedQuestion && selectedQuestion.id === id) {
       onQuestionSelect(null);
@@ -55,27 +60,31 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
               {formTitle}
             </h1>
             {formDescription && (
-              <p className="text-gray-600 leading-relaxed">
-                {formDescription}
-              </p>
+              <p className="text-gray-600 leading-relaxed">{formDescription}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Questions */}
-      {questions.length === 0 ? (
+      {questions?.length === 0 ? (
         <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg text-center">
-          <p className="text-gray-500">Click the buttons in the left sidebar to add questions</p>
+          <p className="text-gray-500">
+            Click the buttons in the left sidebar to add questions
+          </p>
         </div>
       ) : (
-        questions.map((question, index) => (
+        questions?.map((question, index) => (
           <QuestionBuilderBlock
             key={question.id ?? `${question.question_type}-${index}`}
             question={question}
             onUpdate={updateQuestion}
             onDelete={deleteQuestion}
-            isSelected={selectedQuestion?.id !== undefined && question.id !== undefined ? selectedQuestion.id === question.id : selectedQuestion === question}
+            isSelected={
+              selectedQuestion?.id !== undefined && question.id !== undefined
+                ? selectedQuestion.id === question.id
+                : selectedQuestion === question
+            }
             onSelect={onQuestionSelect}
           />
         ))
@@ -84,4 +93,4 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   );
 };
 
-export default FormBuilder; 
+export default FormBuilder;
