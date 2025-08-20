@@ -218,9 +218,10 @@ export const API_ENDPOINTS = {
     SUBMIT_TO_ADMIN: (id: string | number) => `/api/forms/${id}/submit`,
   },
 
-  ADMIN:{
-    APPROVED: (id:string | number) => `api/forms/${id}/approve`,
-    REJECT: (id:string | number) => `api/forms/${id}/reject`,
+  ADMIN: {
+    APPROVED: (id: string | number) => `api/forms/${id}/approve`,
+    REJECT: (id: string | number) => `api/forms/${id}/reject`,
+    PUBLISH: (id: string | number) => `/api/forms/${id}/publish`,
   },
 
   SEARCH: {
