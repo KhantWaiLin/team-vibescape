@@ -1,6 +1,6 @@
 // Form and Question Types
 export interface Question {
-  id?: number;
+  id?: number | string;
   question_text: string;
   question_type: string;
   is_required: number;

@@ -55,7 +55,7 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
     if (onQuestionsChange) {
       const newQuestion: Question = {
         // Generate a temporary client-side id for stable selection/updates
-        id: Date.now() + Math.floor(Math.random() * 100000),
+        id: `temp_${Date.now()}_${Math.floor(Math.random() * 100000)}`,
         question_text: `New ${questionType} question`,
         question_type: questionType,
         is_required: 0,

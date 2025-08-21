@@ -26,7 +26,7 @@ const SubmissionInsightLayout: React.FC<SubmissionInsightLayoutProps> = ({
     if (onBackToDashboard) {
       onBackToDashboard();
     } else {
-      navigate("/dashboard");
+      navigate("/");
     }
   };
 

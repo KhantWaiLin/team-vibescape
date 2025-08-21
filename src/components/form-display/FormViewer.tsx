@@ -75,7 +75,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
       switch (question.question_type) {
         case 'checkboxes':
           return {
-            question_id: questionId,
+            question_id: Number(questionId),
             answer: {
               selected_options: Array.isArray(value) ? value : [value]
             }
@@ -83,19 +83,19 @@ const FormViewer: React.FC<FormViewerProps> = ({
         case 'multiple_choice':
         case 'dropdown':
           return {
-            question_id: questionId,
+            question_id: Number(questionId),
             answer: {
               selected_options: [value]
             }
           };
         case 'rating':
           return {
-            question_id: questionId,
+            question_id: Number(questionId),
             answer: value
           };
         case 'file':
           return {
-            question_id: questionId,
+            question_id: Number(questionId),
             answer: {
               file: value
             }
@@ -103,7 +103,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
         default:
           // For text, paragraph, number, datetime, title_text
           return {
-            question_id: questionId,
+            question_id: Number(questionId),
             answer: value
           };
       }

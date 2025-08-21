@@ -82,3 +82,126 @@ export const getOptionsCount = (options: string | string[] | null | undefined): 
   const parsedOptions = parseFormOptions(options);
   return parsedOptions.length;
 };
+
+/**
+ * Checks if a question is new (not yet saved to database)
+ * 
+ * @param question - The question object
+ * @returns True if the question is new, false if it exists
+ * 
+ * @example
+ * ```tsx
+ * const isNew = isNewQuestion(question);
+ * if (isNew) {
+ *   // Handle new question (create)
+ * } else {
+ *   // Handle existing question (update)
+ * }
+ * ```
+ */
+export const isNewQuestion = (question: { id?: string | number | null }): boolean => {
+  // Question is new if:
+  // 1. No ID exists
+  // 2. ID is null or undefined
+  // 3. ID is a temporary ID (starts with 'temp_')
+  // 4. ID is 0 or negative
+  return !question.id || 
+         question.id === null || 
+         question.id === undefined ||
+         question.id.toString().startsWith('temp_') ||
+         (typeof question.id === 'number' && question.id <= 0);
+};
+
+/**
+ * Separates questions into new and existing arrays
+ * 
+ * @param questions - Array of questions
+ * @returns Object with newQuestions and existingQuestions arrays
+ * 
+ * @example
+ * ```tsx
+ * const { newQuestions, existingQuestions } = separateQuestionsByStatus(questions);
+ * 
+ * // Send new questions to CREATE endpoint
+ * if (newQuestions.length > 0) {
+ *   await apiService.post('/api/questions', { questions: newQuestions });
+ * }
+ * 
+ * // Send existing questions to UPDATE endpoint
+ * if (existingQuestions.length > 0) {
+ *   await apiService.put('/api/questions/bulk', { questions: existingQuestions });
+ * }
+ * ```
+ */
+export const separateQuestionsByStatus = <T extends { 
+  id?: string | number | null;
+  question_text: string;
+}>(
+  questions: T[]
+): { newQuestions: T[], existingQuestions: T[] } => {
+  const newQuestions: T[] = [];
+  const existingQuestions: T[] = [];
+
+  questions.forEach((question, index) => {
+    if (isNewQuestion(question)) {
+      newQuestions.push(question);
+      console.log(`Question ${index + 1} "${question.question_text}" is NEW (ID: ${question.id})`);
+    } else {
+      existingQuestions.push(question);
+      console.log(`Question ${index + 1} "${question.question_text}" is EXISTING (ID: ${question.id})`);
+    }
+  });
+
+  return { newQuestions, existingQuestions };
+};
+
+/**
+ * Prepares questions for API submission, handling new vs existing questions
+ * 
+ * @param questions - Array of questions
+ * @returns Formatted questions ready for API submission
+ * 
+ * @example
+ * ```tsx
+ * const formattedQuestions = prepareQuestionsForSubmission(questions);
+ * // formattedQuestions will have question_id only for existing questions
+ * ```
+ */
+export const prepareQuestionsForSubmission = <T extends { 
+  id?: string | number | null;
+  question_text: string;
+  question_type: string;
+  is_required: number;
+  options?: any;
+  placeholder?: string;
+}>(
+  questions: T[]
+): Array<{
+  question_id?: number | string;
+  question_text: string;
+  question_type: string;
+  is_required: number;
+  options: string[];
+  placeholder?: string;
+  order: number;
+}> => {
+  return questions.map((q, index) => {
+    const isNew = isNewQuestion(q);
+    
+    const questionData: any = {
+      question_text: q.question_text,
+      question_type: q.question_type,
+      is_required: q.is_required,
+      options: parseFormOptions(q.options),
+      placeholder: q.placeholder,
+      order: index + 1,
+    };
+
+    // Only add question_id for existing questions
+    if (!isNew && q.id) {
+      questionData.question_id = q.id;
+    }
+
+    return questionData;
+  });
+};

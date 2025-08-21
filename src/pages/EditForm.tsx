@@ -6,7 +6,7 @@ import { FormCreateLayout } from "../components/layout";
 import FormPreview from "../components/FormPreview";
 import { API_ENDPOINTS, apiService } from "../services/api";
 import toast from "react-hot-toast";
-import { parseFormOptions } from "../utils";
+import { parseFormOptions, separateQuestionsByStatus, prepareQuestionsForSubmission } from "../utils";
 
 const EditForm = () => {
   const { formId } = useParams<{ formId: string }>();
@@ -111,6 +111,23 @@ const EditForm = () => {
     try {
       setSaving(true);
 
+      // Analyze questions to identify new vs existing
+      const { newQuestions, existingQuestions } = separateQuestionsByStatus(questions);
+      
+      console.log('=== QUESTION ANALYSIS ===');
+      console.log(`Total questions: ${questions.length}`);
+      console.log(`New questions: ${newQuestions.length}`);
+      console.log(`Existing questions: ${existingQuestions.length}`);
+      
+      if (newQuestions.length > 0) {
+        console.log('New questions:', newQuestions.map(q => ({ text: q.question_text, type: q.question_type })));
+      }
+      
+      if (existingQuestions.length > 0) {
+        console.log('Existing questions:', existingQuestions.map(q => ({ id: q.id, text: q.question_text, type: q.question_type })));
+      }
+      console.log('========================');
+
       // Prepare the complete request body in the required format
       const requestBody = {
         override: true,
@@ -119,15 +136,7 @@ const EditForm = () => {
         category: formCategory,
         is_published: false,
         published_at: null,
-        questions: questions.map((q, index) => ({
-          question_id: q.id,
-          question_text: q.question_text,
-          question_type: q.question_type,
-          is_required: q.is_required,
-          options: parseFormOptions(q.options),
-          placeholder: q.placeholder,
-          order: index + 1,
-        })),
+        questions: prepareQuestionsForSubmission(questions),
       };
 
       // Send single PUT request to update form with all data
@@ -140,6 +149,9 @@ const EditForm = () => {
       toast.success(
         `Form updated successfully! ${questions.length} questions saved.`
       );
+      
+      // Navigate to draft page after successful save
+      navigate("/");
     } catch (e) {
       console.error("Failed to update form", e);
       toast.error("Failed to update form. Please try again.");

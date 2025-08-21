@@ -8,7 +8,6 @@ import SubmissionInsightLayout from "../components/layout/SubmissionInsightLayou
 
 // Lazy load components
 const Home = React.lazy(() => import("../pages/Home"));
-const Dashboard = React.lazy(() => import("../pages/Dashboard"));
 const Login = React.lazy(() => import("../pages/auth/Login"));
 const NotFound = React.lazy(() => import("../pages/NotFound"));
 const Draft = React.lazy(() => import("../pages/Draft"));
@@ -53,18 +52,6 @@ export const routes: RouteObject[] = [
         <Suspense fallback={<LoadingSpinner />}>
           <ProtectedRoute>
             <Templates />
-          </ProtectedRoute>
-        </Suspense>
-      </Layout>
-    ),
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <Layout>
-        <Suspense fallback={<LoadingSpinner />}>
-          <ProtectedRoute>
-            <Dashboard />
           </ProtectedRoute>
         </Suspense>
       </Layout>
