@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Question } from "../../../types";
 import fileUploadIcon from "../../../assets/icons/cloud_upload.svg";
+import { apiService } from "../../../services/api";
 
 interface FileInputProps {
   question: Question;
@@ -9,18 +10,60 @@ interface FileInputProps {
 }
 
 const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setUploading(true);
+      
+      try {
+        // Create FormData for file upload
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('is_public', '1');
+        
+        // Upload file to API
+        const response: any = await apiService.post('/api/files/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            ...apiService.getAuthHeaders()
+          }
+        });
+        
+        if (response.code === 200 && response.data) {
+          setUploadedFileUrl(response.data.url || response.data.file_url);
+          // Call onChange with the uploaded file info
+          onChange?.(file);
+        }
+      } catch (error) {
+        console.error('File upload failed:', error);
+        // You might want to show an error message to the user
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
+
+  const removeFile = () => {
+    setSelectedFile(null);
+    setUploadedFileUrl(null);
+    onChange?.(undefined as any);
+  };
+
   return (
     <div className="w-full">
       {/* File upload drop zone */}
       <div className="relative">
         <input
           type="file"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) onChange?.(file);
-          }}
+          onChange={handleFileChange}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
           title={question.placeholder || "Choose file"}
+          disabled={uploading}
         />
         <div className="border-2 border-dashed border-light-border bg-light-bg rounded-lg p-8 text-center transition-colors" 
              onMouseEnter={(e) => {
@@ -47,6 +90,48 @@ const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
           </div>
         </div>
       </div>
+
+      {/* Selected file display */}
+      {selectedFile && (
+        <div className="mt-4 p-4 bg-[var(--color-green-50)] border border-[var(--color-green-200)] rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-[var(--color-green-600)] rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-[var(--color-green-800)] truncate">
+                  {selectedFile.name}
+                </p>
+                <p className="text-sm text-[var(--color-green-600)]">
+                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+                {uploadedFileUrl && (
+                  <p className="text-xs text-[var(--color-green-600)] mt-1">
+                    ✅ Uploaded successfully
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              {uploading && (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--color-green-600)]"></div>
+              )}
+              <button
+                onClick={removeFile}
+                className="p-2 text-[var(--color-green-600)] hover:bg-[var(--color-green-100)] rounded-lg transition-colors"
+                title="Remove file"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
