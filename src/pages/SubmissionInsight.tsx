@@ -1,29 +1,111 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import StatCard from "../components/StatCard";
 import DataTable from "../components/DataTable";
 import type { Column } from "../components/DataTable";
+import { apiService } from "../services/api";
+import toast from "react-hot-toast";
 
 const SubmissionInsight = () => {
-  // Mock data - replace with actual API calls
-  const stats = {
-    totalResponses: 2,
-    totalViews: 10,
-    conversionRate: 10
-  };
+  const { formId } = useParams<{ formId: string }>();
+  
+  // State for form data and submissions
+  const [formData, setFormData] = useState<any>(null);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock submissions data
-  const submissions = [
-    { id: 1, submitter: "tim.jennings@example.com", date: "Jul 15 2025", time: "03:45 PM" },
-    { id: 2, submitter: "curtis.weaver@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 3, submitter: "willie.jennings@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 4, submitter: "bill.sanders@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 5, submitter: "georgia.young@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 6, submitter: "tanya.hill@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 7, submitter: "deanna.curtis@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 8, submitter: "felicia.reid@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 9, submitter: "debbie.baker@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-    { id: 10, submitter: "sara.cruz@example.com", date: "Jul 15 2025", time: "04:30 PM" },
-  ];
+  // Stats calculated from form data
+  const [stats, setStats] = useState({
+    totalResponses: 0,
+    totalViews: 0,
+    conversionRate: 0
+  });
+
+  // Fetch form submissions data
+  useEffect(() => {
+    const fetchFormSubmissions = async () => {
+      if (!formId) {
+        setError("No form ID provided");
+        setLoading(false);
+        return;
+      }
+
+      console.log("Fetching submissions for form ID:", formId);
+      console.log("API endpoint:", `/api/form-submissions/detail/${formId}`);
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Call the API endpoint you specified
+        const response: any = await apiService.get(
+          `/api/form-submissions/detail/${formId}`,
+          apiService.getAuthHeaders()
+        );
+
+        console.log("API Response:", response);
+        
+        if (response.code === 200 && response.data) {
+          setFormData(response.data);
+          
+          // Extract and format submissions from response
+          if (response.data.submissions) {
+            const formattedSubmissions = response.data.submissions.flatMap((userSubmission: any) => {
+              return userSubmission.submissions.map((submission: any, index: number) => {
+                // Format submission date and time
+                const submittedAt = new Date(submission.submitted_at);
+                const date = submittedAt.toLocaleDateString('en-US', { 
+                  month: 'short', 
+                  day: 'numeric', 
+                  year: 'numeric' 
+                });
+                const time = submittedAt.toLocaleTimeString('en-US', { 
+                  hour: '2-digit', 
+                  minute: '2-digit',
+                  hour12: true 
+                });
+                
+                return {
+                  id: submission.id,
+                  submitter: userSubmission.user_identifier,
+                  date: date,
+                  time: time,
+                  totalQuestions: submission.total_questions_answered,
+                  submittedAt: submission.submitted_at
+                };
+              });
+            });
+            
+            setSubmissions(formattedSubmissions);
+            console.log("Formatted submissions:", formattedSubmissions);
+          }
+          
+          // Calculate stats from summary data
+          const totalResponses = response.data.summary?.total_submissions || 0;
+          const uniqueUsers = response.data.summary?.unique_users || 0;
+          const questionsCount = response.data.summary?.questions_count || 0;
+          
+          console.log("Calculated stats:", { totalResponses, uniqueUsers, questionsCount });
+          
+          setStats({
+            totalResponses,
+            totalViews: uniqueUsers, // Using unique users as views for now
+            conversionRate: uniqueUsers > 0 ? Math.round((totalResponses / uniqueUsers) * 100) : 0
+          });
+        } else {
+          setError("Failed to fetch form submissions data");
+        }
+      } catch (error: any) {
+        console.error("Error fetching form submissions:", error);
+        setError(error.response?.data?.message || "Failed to fetch form submissions");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFormSubmissions();
+  }, [formId]);
 
   // Table columns configuration
   const columns: Column<typeof submissions[0]>[] = [
@@ -40,6 +122,18 @@ const SubmissionInsight = () => {
       header: "Submitter",
       render: (value) => (
         <div className="text-[var(--color-black-600)]">{value}</div>
+      ),
+    },
+    {
+      key: "totalQuestions",
+      header: "Questions Answered",
+      width: "140px",
+      render: (value) => (
+        <div className="text-[var(--color-black-600)] text-center">
+          <span className="inline-flex items-center justify-center w-6 h-6 bg-[var(--color-primary)] text-white text-xs font-medium rounded-full">
+            {value}
+          </span>
+        </div>
       ),
     },
     {
@@ -71,19 +165,86 @@ const SubmissionInsight = () => {
     },
   ];
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-green-600)] mx-auto mb-4"></div>
+            <p className="text-[var(--color-black-600)]">Loading submission insights...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="text-red-500 mb-4">
+              <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-[var(--color-black-900)] mb-2">Error Loading Data</h2>
+            <p className="text-[var(--color-black-600)] mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--color-black-900)] mb-2">
           Submission Insights
+          {formData?.title && (
+            <span className="text-lg font-normal text-[var(--color-black-600)] ml-2">
+              - {formData.title}
+            </span>
+          )}
         </h1>
         <p className="text-[var(--color-black-600)]">
           Track your form performance and submission analytics
         </p>
+        {formId && (
+          <div className="mt-2 p-3 bg-[var(--color-light-bg)] rounded-lg border border-[var(--color-light-border)]">
+            <p className="text-sm text-[var(--color-black-600)]">
+              <strong>Form ID:</strong> {formId}
+            </p>
+            <p className="text-sm text-[var(--color-black-600)]">
+              <strong>API Endpoint:</strong> /api/form-submissions/detail/{formId}
+            </p>
+            {formData && (
+              <div className="mt-2 pt-2 border-t border-[var(--color-light-border)]">
+                <p className="text-sm text-[var(--color-black-600)]">
+                  <strong>Form Title:</strong> {formData.form?.title || 'N/A'}
+                </p>
+                <p className="text-sm text-[var(--color-black-600)]">
+                  <strong>Total Submissions:</strong> {formData.summary?.total_submissions || 0}
+                </p>
+                <p className="text-sm text-[var(--color-black-600)]">
+                  <strong>Unique Users:</strong> {formData.summary?.unique_users || 0}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Total Responses"
           value={stats.totalResponses}
@@ -91,16 +252,23 @@ const SubmissionInsight = () => {
         />
         
         <StatCard
-          title="Total Views"
+          title="Unique Users"
           value={stats.totalViews}
-          subtitle="Form page visits"
+          subtitle="Different submitters"
+          className="bg-white"
+        />
+        
+        <StatCard
+          title="Questions Count"
+          value={formData?.summary?.questions_count || 0}
+          subtitle="Total questions"
           className="bg-white"
         />
         
         <StatCard
           title="Conversion Rate"
           value={`${stats.conversionRate}%`}
-          subtitle="Responses per view"
+          subtitle="Responses per user"
           className="bg-white"
         />
       </div>

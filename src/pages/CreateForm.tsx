@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FormBuilder from "../components/FormBuilder";
 import type { Question } from "../types";
 import { FormCreateLayout } from "../components/layout";
 import FormPreview from "../components/FormPreview";
 import { API_ENDPOINTS, apiService } from "../services/api";
 import toast from "react-hot-toast";
+import { parseFormOptions } from "../utils";
 
 const CreateForm = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
     null
   );
   const [formTitle, setFormTitle] = useState<string>("Untitled Form");
   const [formDescription, setFormDescription] = useState<string>("");
+  const [formCategory, setFormCategory] = useState<string>("General");
   const [isPreviewMode, setIsPreviewMode] = useState<boolean>(false);
   const [formId, setFormId] = useState<number | null>(null);
 
@@ -39,6 +42,7 @@ const CreateForm = () => {
       setQuestions(questions);
       setFormTitle(data.title);
       setFormDescription(data.description);
+      setFormCategory(data.category || "General");
       // Extract form id if provided
       const createdId = data?.response?.id ?? data?.id;
       if (createdId) {
@@ -56,6 +60,10 @@ const CreateForm = () => {
 
   const handleQuestionSelect = (question: Question | null) => {
     setSelectedQuestion(question);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setFormCategory(category);
   };
 
   const handlePreviewClick = () => {
@@ -78,15 +86,7 @@ const CreateForm = () => {
         question_text: q.question_text,
         question_type: q.question_type,
         is_required: q.is_required,
-        options: (() => {
-          if (!q.options) return [] as string[];
-          try {
-            const parsed = JSON.parse(q.options as string);
-            return Array.isArray(parsed) ? parsed : [];
-          } catch {
-            return [] as string[];
-          }
-        })(),
+        options: parseFormOptions(q.options),
         placeholder: q.placeholder,
         order: index + 1,
       }));
@@ -127,7 +127,9 @@ const CreateForm = () => {
 
       if (response.code === 200) {
         toast.success("Form submitted to admin successfully!");
-        // Optionally redirect to forms list or show success message
+        
+        // Navigate to home page after successful submission
+        navigate("/");
       } else {
         toast.error("Failed to submit form to admin");
       }
@@ -160,6 +162,8 @@ const CreateForm = () => {
       formDescription={formDescription}
       onFormTitleChange={setFormTitle}
       onFormDescriptionChange={setFormDescription}
+      formCategory={formCategory}
+      onFormCategoryChange={handleCategoryChange}
       onPreviewClick={handlePreviewClick}
       onSaveDraftClick={handleSaveDraft}
       onSubmitClick={handleSubmitToAdmin}

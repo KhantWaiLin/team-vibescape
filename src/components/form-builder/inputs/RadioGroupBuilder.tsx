@@ -1,5 +1,6 @@
 import React from "react";
 import type { Question } from "../../../types";
+import { parseFormOptions } from "../../../utils";
 
 interface RadioGroupBuilderProps {
   question: Question;
@@ -8,9 +9,11 @@ interface RadioGroupBuilderProps {
 const RadioGroupBuilder: React.FC<RadioGroupBuilderProps> = ({ question }) => {
   return (
     <div className="flex flex-col gap-2 mt-1">
-      {question.options &&
-        JSON.parse(question.options).map((opt: string, idx: number) => (
-          <label key={idx} className="inline-flex items-center text-gray-800 font-medium">
+      {parseFormOptions(question?.options).map((opt: string, idx: number) => (
+          <label
+            key={idx}
+            className="inline-flex items-center text-gray-800 font-medium"
+          >
             <input
               type="radio"
               value={opt}
@@ -24,4 +27,4 @@ const RadioGroupBuilder: React.FC<RadioGroupBuilderProps> = ({ question }) => {
   );
 };
 
-export default RadioGroupBuilder; 
+export default RadioGroupBuilder;

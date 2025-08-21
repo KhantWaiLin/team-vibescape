@@ -1,5 +1,6 @@
 import React from "react";
 import type { Question } from "../../../types";
+import { parseFormOptions } from "../../../utils";
 
 interface CheckboxGroupInputProps {
   question: Question;
@@ -20,8 +21,7 @@ const CheckboxGroupInput: React.FC<CheckboxGroupInputProps> = ({ question, value
 
   return (
     <div className="flex flex-col gap-2 mt-1">
-      {question?.options && question?.options?.length > 0 &&
-        JSON.parse(question.options).map((opt: string, idx: number) => (
+      {parseFormOptions(question?.options).map((opt: string, idx: number) => (
           <label key={idx} className="inline-flex items-center text-[var(--color-light-text-primary)] font-medium">
             <input
               type="checkbox"

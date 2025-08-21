@@ -41,7 +41,7 @@ const FormCard: React.FC<FormCardProps> = ({
         </h3>
         <div className="flex items-center gap-2">
           {statusLabel ? <StatusBadge status={statusLabel} /> : null}
-          {/* Edit button - only show for draft status */}
+          {/* Edit button - only show for draft status (forms that can be edited) */}
           {statusLabel === 'draft' && onEdit && (
             <button
               onClick={onEdit}

@@ -1,5 +1,6 @@
 import React from "react";
 import type { Question } from "../../../types";
+import { parseFormOptions } from "../../../utils";
 
 interface RadioGroupInputProps {
   question: Question;
@@ -7,15 +8,21 @@ interface RadioGroupInputProps {
   onChange?: (value: string) => void;
 }
 
-const RadioGroupInput: React.FC<RadioGroupInputProps> = ({ question, value, onChange }) => {
+const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
+  question,
+  value,
+  onChange,
+}) => {
   return (
     <div className="flex flex-col gap-2 mt-1">
-      {question.options &&
-        JSON.parse(question.options).map((opt: string, idx: number) => (
-          <label key={idx} className="inline-flex items-center text-[var(--color-light-text-primary)] font-medium">
+      {parseFormOptions(question?.options).map((opt: string, idx: number) => (
+          <label
+            key={idx}
+            className="inline-flex items-center text-[var(--color-light-text-primary)] font-medium"
+          >
             <input
               type="radio"
-              name={`question-${question.id ?? 'temp'}`}
+              name={`question-${question.id ?? "temp"}`}
               value={opt}
               checked={value === opt}
               onChange={(e) => onChange?.(e.target.value)}
@@ -28,4 +35,4 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({ question, value, onCh
   );
 };
 
-export default RadioGroupInput; 
+export default RadioGroupInput;

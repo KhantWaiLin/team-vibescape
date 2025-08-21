@@ -75,6 +75,10 @@ const MyForm: React.FC = () => {
 		if (currentPage !== 1) setCurrentPage(1);
 	};
 
+	const handleEditForm = (formId: number) => {
+		navigate(`/create-form/${formId}`);
+	};
+
 	// Map API data to FormCard props
 	const forms =
 		apiData?.data.map((form: any) => ({
@@ -161,7 +165,8 @@ const MyForm: React.FC = () => {
 										participantsCount={form.participantsCount}
 										viewsCount={form.viewsCount}
 										maxWords={25}
-                    username={form.username}
+										username={form.username}
+										onEdit={() => handleEditForm(form.id)}
 									/>
 								))}
 							</div>

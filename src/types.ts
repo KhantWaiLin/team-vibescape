@@ -99,6 +99,22 @@ export interface FormSubmissionData {
   [key: string]: any;
 }
 
+export interface FormSubmissionAnswer {
+  selected_options?: string[];
+  file?: any;
+}
+
+export interface FormSubmissionItem {
+  question_id: number;
+  answer: string | number | FormSubmissionAnswer;
+}
+
+export interface FormSubmissionPayload {
+  url_token: string;
+  email: string;
+  submissions: FormSubmissionItem[];
+}
+
 // API Response Types
 export interface ApiResponse<T = any> {
   success: boolean;

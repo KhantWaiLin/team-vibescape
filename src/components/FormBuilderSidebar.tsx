@@ -7,8 +7,10 @@ interface FormBuilderSidebarProps {
   onAddQuestion: (questionType: string) => void;
   formTitle: string;
   formDescription: string;
+  formCategory: string;
   onFormTitleChange: (title: string) => void;
   onFormDescriptionChange: (description: string) => void;
+  onFormCategoryChange: (category: string) => void;
 }
 
 const FormBuilderSidebar: React.FC<FormBuilderSidebarProps> = ({
@@ -16,8 +18,10 @@ const FormBuilderSidebar: React.FC<FormBuilderSidebarProps> = ({
   onAddQuestion,
   formTitle,
   formDescription,
+  formCategory,
   onFormTitleChange,
   onFormDescriptionChange,
+  onFormCategoryChange,
 }) => {
   return (
     <div
@@ -50,6 +54,27 @@ const FormBuilderSidebar: React.FC<FormBuilderSidebarProps> = ({
               placeholder="Enter form description (optional)"
               rows={3}
             />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Form Category
+            </label>
+            <select
+              value={formCategory}
+              onChange={(e) => onFormCategoryChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="General">General</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Human Resources">Human Resources</option>
+              <option value="Finance">Finance</option>
+              <option value="Events">Events</option>
+              <option value="Training">Training</option>
+              <option value="Services">Services</option>
+              <option value="Customer Feedback">Customer Feedback</option>
+              <option value="Surveys">Surveys</option>
+              <option value="Registration">Registration</option>
+            </select>
           </div>
           <div className="border-b border-gray-200 mb-6"></div>
           <h3 className="text-sm font-medium text-gray-900 mb-0">

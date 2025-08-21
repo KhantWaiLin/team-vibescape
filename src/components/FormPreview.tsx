@@ -1,5 +1,5 @@
 import React from "react";
-import type { Question } from "../types";
+import type { Question, FormSubmissionPayload } from "../types";
 import { FormViewer } from "./form-display";
 
 interface FormPreviewProps {
@@ -15,7 +15,7 @@ const FormPreview: React.FC<FormPreviewProps> = ({
   questions, 
   onBackToEdit 
 }) => {
-  const handleSubmit = (formData: Record<number, any>) => {
+  const handleSubmit = (formData: FormSubmissionPayload) => {
     console.log('Form submitted:', formData);
     // Handle form submission here
   };

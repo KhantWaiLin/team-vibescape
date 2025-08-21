@@ -1,5 +1,6 @@
 import React from "react";
 import type { Question } from "../../../types";
+import { parseFormOptions } from "../../../utils";
 
 interface DropdownInputBuilderProps {
   question: Question;
@@ -12,8 +13,7 @@ const DropdownInputBuilder: React.FC<DropdownInputBuilderProps> = ({ question })
       disabled
     >
       <option value="">Select...</option>
-      {question.options &&
-        JSON.parse(question.options).map((opt: string, idx: number) => (
+      {parseFormOptions(question?.options).map((opt: string, idx: number) => (
           <option key={idx} value={opt}>{opt}</option>
         ))}
     </select>

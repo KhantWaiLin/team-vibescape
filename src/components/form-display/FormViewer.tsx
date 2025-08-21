@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import type { Question } from "../../types";
+import React, { useState, useEffect } from "react";
+import type { Question, FormSubmissionPayload } from "../../types";
 import QuestionBlock from "./QuestionBlock";
 
 interface FormViewerProps {
   formTitle: string;
   formDescription?: string;
   questions: Question[];
-  onSubmit?: (formData: Record<number | string, any>) => void;
+  onSubmit?: (formData: FormSubmissionPayload) => void;
   onBack?: () => void;
   isPreview?: boolean;
   submitButtonText?: string;
+  urlToken?: string;
 }
 
 
@@ -23,22 +24,121 @@ const FormViewer: React.FC<FormViewerProps> = ({
   onSubmit,
   onBack,
   isPreview = false,
-  submitButtonText = "Submit Form"
+  submitButtonText = "Submit Form",
+  urlToken
 }) => {
   const [formData, setFormData] = useState<Record<number | string, any>>({});
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [emailError, setEmailError] = useState<string>('');
 
   const handleInputChange = (questionId: number | string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [questionId]: value
     }));
+    console.log(formData);
   };
+
+  const getQuestionKey = (question: Question, index: number): string => {
+    return question.id?.toString() ?? `${question.question_type}-${index}`;
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Clear email error when user starts typing
+  useEffect(() => {
+    if (userEmail && emailError) {
+      setEmailError('');
+    }
+  }, [userEmail, emailError]);
+
+  const transformFormDataForSubmission = (): FormSubmissionPayload => {
+    const submissions = questions.map((question, index) => {
+      const questionKey = getQuestionKey(question, index);
+      const questionId = question.id;
+      
+      // Skip questions without an ID for submission
+      if (!questionId) {
+        return null;
+      }
+      
+      const value = formData[questionKey];
+      
+      if (!value) {
+        return null; // Skip unanswered questions
+      }
+
+      // Handle different question types
+      switch (question.question_type) {
+        case 'checkboxes':
+          return {
+            question_id: questionId,
+            answer: {
+              selected_options: Array.isArray(value) ? value : [value]
+            }
+          };
+        case 'multiple_choice':
+        case 'dropdown':
+          return {
+            question_id: questionId,
+            answer: {
+              selected_options: [value]
+            }
+          };
+        case 'rating':
+          return {
+            question_id: questionId,
+            answer: value
+          };
+        case 'file':
+          return {
+            question_id: questionId,
+            answer: {
+              file: value
+            }
+          };
+        default:
+          // For text, paragraph, number, datetime, title_text
+          return {
+            question_id: questionId,
+            answer: value
+          };
+      }
+    }).filter(Boolean); // Remove null entries
+
+    return {
+      url_token: urlToken || '',
+      email: userEmail,
+      submissions: submissions.filter((item): item is NonNullable<typeof item> => item !== null)
+    };
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate email
+    if (!userEmail.trim()) {
+      setEmailError('Email is required');
+      return;
+    }
+    
+    if (!validateEmail(userEmail)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+    
+    setEmailError('');
+    
+    // Transform form data to required format
+    const submissionData = transformFormDataForSubmission();
+    
     if (onSubmit) {
-      onSubmit(formData);
+      onSubmit(submissionData);
     } else {
-      console.log('Form submitted:', formData);
+      console.log('Form submitted:', submissionData);
     }
   };
 
@@ -97,6 +197,31 @@ const FormViewer: React.FC<FormViewerProps> = ({
             </div>
           </div>
 
+          {/* Email Field */}
+          <div className="bg-[var(--color-light-card)] rounded-lg shadow-sm border border-[var(--color-light-border)] p-6">
+            <div className="space-y-2">
+              <label htmlFor="user-email" className="block text-sm font-medium text-[var(--color-light-text-primary)]">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="user-email"
+                type="email"
+                value={userEmail}
+                onChange={(e) => setUserEmail(e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] ${
+                  emailError 
+                    ? 'border-red-500 focus:border-red-500' 
+                    : 'border-[var(--color-light-border)] focus:border-[var(--color-primary)]'
+                }`}
+                placeholder="Enter your email address"
+                required
+              />
+              {emailError && (
+                <p className="text-sm text-red-500">{emailError}</p>
+              )}
+            </div>
+          </div>
+
           {/* Questions */}
           {questions.length === 0 ? (
             <div className="p-8 border-2 border-dashed border-[var(--color-light-border)] rounded-lg text-center">
@@ -105,10 +230,10 @@ const FormViewer: React.FC<FormViewerProps> = ({
           ) : (
             questions.map((question, index) => (
               <QuestionBlock 
-                key={question.id ?? `${question.question_type}-${index}`}
+                key={getQuestionKey(question, index)}
                 question={question}
-                value={formData[question.id ?? `${question.question_type}-${index}`]}
-                onChange={(value) => handleInputChange(question.id ?? `${question.question_type}-${index}`, value)}
+                value={formData[getQuestionKey(question, index)]}
+                onChange={(value) => handleInputChange(getQuestionKey(question, index), value)}
               />
             ))
           )}

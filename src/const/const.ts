@@ -53,11 +53,6 @@ export const questionsTypes = [
     question_type: "number",
   },
   {
-    label: "Email",
-    icon: emailIcon,
-    question_type: "email",
-  },
-  {
     label: "Dropdown",
     icon: dropdownIcon,
     question_type: "dropdown",
@@ -77,11 +72,11 @@ export const questionsTypes = [
     icon: dateIcon,
     question_type: "datetime",
   },
-  {
-    label: "Time",
-    icon: timeIcon,
-    question_type: "time",
-  },
+  // {
+  //   label: "Time",
+  //   icon: timeIcon,
+  //   question_type: "time",
+  // },
   {
     label: "File Upload",
     icon: fileUploadIcon,

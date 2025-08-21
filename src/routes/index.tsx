@@ -16,6 +16,7 @@ const Trash = React.lazy(() => import("../pages/Trash"));
 const MyForm = React.lazy(() => import("../pages/MyForm"));
 const Templates = React.lazy(() => import("../pages/Templates"));
 const CreateForm = React.lazy(() => import("../pages/CreateForm"));
+const EditForm = React.lazy(() => import("../pages/EditForm"));
 const Submission = React.lazy(() => import("../pages/Submission"));
 const SubmissionInsight = React.lazy(
   () => import("../pages/SubmissionInsight")
@@ -123,6 +124,16 @@ export const routes: RouteObject[] = [
       <Suspense fallback={<LoadingSpinner />}>
         <ProtectedRoute>
           <CreateForm />
+        </ProtectedRoute>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/create-form/:formId",
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <ProtectedRoute>
+          <EditForm />
         </ProtectedRoute>
       </Suspense>
     ),

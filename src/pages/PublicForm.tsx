@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FormViewer, LoadingSpinner } from "../components";
 import { API_ENDPOINTS, apiService } from "../services/api";
-import type { Question } from "../types";
+import type { Question, FormSubmissionPayload } from "../types";
 import toast from "react-hot-toast";
 
 interface PublicFormData {
@@ -63,13 +63,12 @@ const PublicForm: React.FC = () => {
 
   const handleBack = () => navigate(-1);
 
-  const handleSubmit = async (formData: Record<number | string, any>) => {
+  const handleSubmit = async (formData: FormSubmissionPayload) => {
     if (!formUrl) return;
     setSubmitting(true);
     try {
-      await apiService.post(API_ENDPOINTS.RESPONSES.CREATE(formUrl), {
-        responses: formData,
-      });
+      // Use the new submission format directly
+      await apiService.post(API_ENDPOINTS.RESPONSES.CREATE, formData);
       toast.success("Response submitted successfully!");
       navigate("/submission");
     } catch (e) {
@@ -114,6 +113,7 @@ const PublicForm: React.FC = () => {
       onSubmit={handleSubmit}
       isPreview={false}
       submitButtonText={submitting ? "Submitting..." : "Submit Response"}
+      urlToken={formUrl}
     />
   );
 };

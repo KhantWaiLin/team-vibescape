@@ -1,15 +1,21 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CategoryDropdown from "../components/CategoryDropdown";
 import { FormCard, SearchBar } from "../components";
 
 const Draft: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const navigate = useNavigate();
+
+  const handleEditForm = (formId: number) => {
+    navigate(`/create-form/${formId}`);
+  };
 
   const sampleForms = [
     {
       id: 1,
       title: "Networking Event Sign-Up",
-      statusLabel: "Draft",
+      statusLabel: "draft" as const,
       statusColor: "bg-[var(--color-black-100)] text-[var(--color-black-600)]",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.",
@@ -21,7 +27,7 @@ const Draft: React.FC = () => {
     {
       id: 2,
       title: "Panel Discussion RSVP",
-      statusLabel: "Draft",
+      statusLabel: "draft" as const,
       statusColor: "bg-[var(--color-black-100)] text-[var(--color-black-600)]",
 
       description:
@@ -34,7 +40,7 @@ const Draft: React.FC = () => {
     {
       id: 3,
       title: "Simple Contact Form",
-      statusLabel: "Draft",
+      statusLabel: "draft" as const,
       statusColor: "bg-[var(--color-black-100)] text-[var(--color-black-600)]",
 
       description:
@@ -46,7 +52,7 @@ const Draft: React.FC = () => {
     {
       id: 4,
       title: "Event Registration",
-      statusLabel: "Draft",
+      statusLabel: "draft" as const,
       statusColor: "bg-[var(--color-black-100)] text-[var(--color-black-600)]",
       description:
         "Event registration form with multiple ticket types and payment options.",
@@ -99,6 +105,7 @@ const Draft: React.FC = () => {
                 participantsCount={form.participantsCount}
                 viewsCount={form.viewsCount}
                 maxWords={25}
+                onEdit={() => handleEditForm(form.id)}
               />
             ))}
           </div>

@@ -13,6 +13,8 @@ interface FormCreateLayoutProps {
   onQuestionSelect?: (question: Question | null) => void;
   formTitle?: string;
   formDescription?: string;
+  formCategory?: string;
+  onFormCategoryChange?: (category: string) => void;
   onFormTitleChange?: (title: string) => void;
   onFormDescriptionChange?: (description: string) => void;
   onPreviewClick?: () => void;
@@ -28,6 +30,8 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
   onQuestionSelect,
   formTitle = "Untitled Form",
   formDescription = "",
+  formCategory = "General",
+  onFormCategoryChange,
   onFormTitleChange,
   onFormDescriptionChange,
   onPreviewClick,
@@ -91,8 +95,10 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
         onAddQuestion={handleAddQuestion}
         formTitle={formTitle}
         formDescription={formDescription}
+        formCategory={formCategory}
         onFormTitleChange={onFormTitleChange || (() => {})}
         onFormDescriptionChange={onFormDescriptionChange || (() => {})}
+        onFormCategoryChange={onFormCategoryChange || (() => {})}
       />
 
       {/* Right Sidebar - Question settings */}

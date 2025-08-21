@@ -210,17 +210,17 @@ export const API_ENDPOINTS = {
     CREATE: "/api/forms",
     RECENT: "/api/forms/recent",
     DETAIL: (id: string | number) => `/api/forms/${id}`,
-    UPDATE: (id: string | number) => `/forms/${id}`,
-    DELETE: (id: string | number) => `/forms/${id}`,
+    UPDATE: (id: string | number) => `/api/forms/${id}`,
+    DELETE: (id: string | number) => `/api/forms/${id}`,
     PBULIC: (url: string) => `/api/forms/public/${url}`,
-    PUBLISH: (id: string | number) => `/forms/${id}/publish`,
-    UNPUBLISH: (id: string | number) => `/forms/${id}/unpublish`,
+    PUBLISH: (id: string | number) => `/api/forms/${id}/publish`,
+    UNPUBLISH: (id: string | number) => `/api/forms/${id}/unpublish`,
     SUBMIT_TO_ADMIN: (id: string | number) => `/api/forms/${id}/submit`,
   },
 
   ADMIN: {
-    APPROVED: (id: string | number) => `api/forms/${id}/approve`,
-    REJECT: (id: string | number) => `api/forms/${id}/reject`,
+    APPROVED: (id: string | number) => `/api/forms/${id}/approve`,
+    REJECT: (id: string | number) => `/api/forms/${id}/reject`,
     PUBLISH: (id: string | number) => `/api/forms/${id}/publish`,
   },
 
@@ -254,23 +254,25 @@ export const API_ENDPOINTS = {
 
   // Questions endpoints
   QUESTIONS: {
-    LIST: (formId: string | number) => `/forms/${formId}/questions`,
-    CREATE: (formId: string | number) => `/forms/${formId}/questions`,
+    LIST: (formId: string | number) => `/api/forms/${formId}/questions`,
+    CREATE: (formId: string | number) => `/api/forms/${formId}/questions`,
     SHOW: (formId: string | number, questionId: string | number) =>
-      `/forms/${formId}/questions/${questionId}`,
+      `/api/forms/${formId}/questions/${questionId}`,
     UPDATE: (formId: string | number, questionId: string | number) =>
-      `/forms/${formId}/questions/${questionId}`,
+      `/api/forms/${formId}/questions/${questionId}`,
     DELETE: (formId: string | number, questionId: string | number) =>
-      `/forms/${formId}/questions/${questionId}`,
+      `/api/forms/${formId}/questions/${questionId}`,
     BULK_CREATE: (formId: string | number) =>
+      `/api/forms/${formId}/questions/bulk`,
+    BULK_UPDATE: (formId: string | number) =>
       `/api/forms/${formId}/questions/bulk`,
   },
 
   // Templates endpoints
   TEMPLATES: {
     LIST: "/api/form-templates",
-    SHOW: (id: string | number) => `/templates/${id}`,
-    USE: (id: string | number) => `/templates/${id}/use`,
+    SHOW: (id: string | number) => `/api/templates/${id}`,
+    USE: (id: string | number) => `/api/templates/${id}/use`,
   },
 
   // Responses endpoints
@@ -278,14 +280,14 @@ export const API_ENDPOINTS = {
     LIST: (formId: string | number) => `/forms/${formId}/responses`,
     SHOW: (formId: string | number, responseId: string | number) =>
       `/forms/${formId}/responses/${responseId}`,
-    CREATE: (formId: string | number) => `/forms/${formId}/responses`,
+    CREATE: `/api/form-submissions/multiple`,
   },
 
   // User endpoints
   USER: {
     PROFILE: "/api/profile",
-    UPDATE_PROFILE: "/user/profile",
-    FORMS: "/user/forms",
-    DASHBOARD: "/user/dashboard",
+    UPDATE_PROFILE: "/api/user/profile",
+    FORMS: "/api/user/forms",
+    DASHBOARD: "/api/user/dashboard",
   },
 } as const;

@@ -76,6 +76,10 @@ const Home: React.FC = () => {
     setIsNewFormModalOpen(true);
   };
 
+  const handleEditForm = (formId: number) => {
+    navigate(`/create-form/${formId}`);
+  };
+
   const handleCreateForm = async (title: string, description: string) => {
     setIsLoading(true);
     try {
@@ -217,21 +221,25 @@ const Home: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {recentForms.map((form: any) => (
+              {recentForms.map((form: any) => {
+                // Debug logging to identify object rendering issues
+                console.log('Form data:', form);
+                return (
                 <FormCard
                   key={form.id}
-                  title={form.title}
-                  statusLabel={form.status}
-                  description={form.description}
-                  category={form.category || "General"}
-                  onEdit={() => {}}
-                  editedText={formatTimeAgo(form.updated_at)}
-                  statusColor={getStatusColor(form.status)}
-                  participantsCount={form.participants_count}
-                  viewsCount={form.views_count}
-                  username={form.username}
+                  title={form.title || "Untitled Form"}
+                  statusLabel={form.status || "draft"}
+                  description={form.description || "No description"}
+                  category={form.category?.name || form.category || "General"}
+                  onEdit={() => handleEditForm(form.id)}
+                  editedText={formatTimeAgo(form.updated_at || form.created_at || new Date().toISOString())}
+                  statusColor={getStatusColor(form.status || "draft")}
+                  participantsCount={form.participants_count || 0}
+                  viewsCount={form.views_count || 0}
+                  username={form.username || "User"}
                 />
-              ))}
+              );
+              })}
             </div>
           )}
         </div>
