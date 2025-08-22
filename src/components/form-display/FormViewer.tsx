@@ -36,6 +36,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
       ...prev,
       [questionId]: value
     }));
+    console.log("value and quesiontId:", value, questionId);
     console.log(formData);
   };
 
@@ -94,6 +95,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
             answer: value
           };
         case 'file':
+          console.log(value);
           return {
             question_id: Number(questionId),
             answer: {

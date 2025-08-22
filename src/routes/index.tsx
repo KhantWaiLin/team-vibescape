@@ -4,7 +4,6 @@ import { Routes, Route } from "react-router-dom";
 import { Layout } from "../components/layout/index";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ProtectedRoute from "../components/ProtectedRoute";
-import SubmissionInsightLayout from "../components/layout/SubmissionInsightLayout";
 
 // Lazy load components
 const Home = React.lazy(() => import("../pages/Home"));
@@ -19,6 +18,9 @@ const EditForm = React.lazy(() => import("../pages/EditForm"));
 const Submission = React.lazy(() => import("../pages/Submission"));
 const SubmissionInsight = React.lazy(
   () => import("../pages/SubmissionInsight")
+);
+const SubmissionSuccess = React.lazy(
+  () => import("../pages/SubmissionSuccess")
 );
 const FormReview = React.lazy(() => import("../pages/FormReview"));
 const PublicForm = React.lazy(() => import("../pages/PublicForm"));
@@ -150,13 +152,11 @@ export const routes: RouteObject[] = [
   {
     path: "/form/submission/:formId",
     element: (
-      <SubmissionInsightLayout>
-        <Suspense fallback={<LoadingSpinner />}>
-          <ProtectedRoute>
-            <SubmissionInsight />
-          </ProtectedRoute>
-        </Suspense>
-      </SubmissionInsightLayout>
+      <Suspense fallback={<LoadingSpinner />}>
+        <ProtectedRoute>
+          <SubmissionInsight />
+        </ProtectedRoute>
+      </Suspense>
     ),
   },
   {
@@ -164,6 +164,14 @@ export const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingSpinner />}>
         <PublicForm />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/submission-success",
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <SubmissionSuccess />
       </Suspense>
     ),
   },

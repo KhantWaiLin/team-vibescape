@@ -5,6 +5,7 @@ import DataTable from "../components/DataTable";
 import type { Column } from "../components/DataTable";
 import { apiService } from "../services/api";
 import toast from "react-hot-toast";
+import SubmissionInsightLayout from "../components/layout/SubmissionInsightLayout";
 
 const SubmissionInsight = () => {
   const { formId } = useParams<{ formId: string }>();
@@ -240,7 +241,11 @@ const SubmissionInsight = () => {
   }
 
   return (
-    <div className="p-6">
+    <SubmissionInsightLayout 
+      title={formData?.form?.title || "Form Submissions"}
+      status={formData?.form?.status || "Unknown"}
+      formData={formData}
+    >
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--color-black-900)] mb-2">
           Submission Insights
@@ -343,7 +348,7 @@ const SubmissionInsight = () => {
           emptyMessage="No submissions found"
         />
       </div>
-    </div>
+    </SubmissionInsightLayout>
   );
 };
 

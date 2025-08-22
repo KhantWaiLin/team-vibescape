@@ -25,25 +25,12 @@ interface FileInputProps {
 }
 
 const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | any>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file: any = e.target.files?.[0];
-    console.log('=== FILE UPLOAD DEBUG ===');
-    console.log('Event target:', e.target);
-    console.log('Files array:', e.target.files);
-    console.log('File object:', file);
-    console.log('File type:', typeof file);
-    console.log('File instanceof File:', file instanceof File);
-    console.log('File properties:', {
-      name: file?.name,
-      size: file?.size,
-      type: file?.type,
-      lastModified: file?.lastModified
-    });
-    
     if (file) {
       setSelectedFile(file);
       setUploading(true);
@@ -64,12 +51,6 @@ const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
         }
         
         formData.append("is_public", "1");
-        console.log('is_public appended to FormData');
-
-        // Upload file to API
-        console.log('=== SENDING REQUEST ===');
-        console.log('FormData before sending:', formData);
-        console.log('FormData entries before sending:');
         for (let [key, value] of formData.entries()) {
           console.log(`${key}:`, value, typeof value);
         }
@@ -89,7 +70,7 @@ const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
         if (response.code === 200 && response.data) {
           setUploadedFileUrl(response.data.url || response.data.file_url);
           // Call onChange with the uploaded file info
-          onChange?.(file?.name);
+          onChange?.(selectedFile?.name);
         }
       } catch (error) {
         console.error("File upload failed:", error);

@@ -2,12 +2,13 @@ import React from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiChevronLeft, HiEye, HiLink, HiGlobe } from "react-icons/hi";
+import toast from "react-hot-toast";
 
 interface SubmissionInsightLayoutProps {
   title?: string;
   status?: string;
+  formData?: any; // Add formData to access url_token
   onPreview?: () => void;
-  onShareLink?: () => void;
   onBackToDashboard?: () => void;
   children: ReactNode;
 }
@@ -15,8 +16,8 @@ interface SubmissionInsightLayoutProps {
 const SubmissionInsightLayout: React.FC<SubmissionInsightLayoutProps> = ({
   title = "Conference Attendee Registration Form",
   status = "Published",
+  formData, // Add formData to destructuring
   onPreview,
-  onShareLink,
   onBackToDashboard,
   children,
 }) => {
@@ -36,9 +37,25 @@ const SubmissionInsightLayout: React.FC<SubmissionInsightLayoutProps> = ({
     }
   };
 
-  const handleShareLink = () => {
-    if (onShareLink) {
-      onShareLink();
+  // Handle copy URL functionality
+  const handleCopyUrl = async () => {
+    try {
+      // Get the url_token from the form data
+      const urlToken = formData?.form?.url_token;
+      
+      if (urlToken) {
+        // Construct the public form URL
+        const publicFormUrl = `${window.location.origin}/public/form/${urlToken}`;
+        await navigator.clipboard.writeText(publicFormUrl);
+        console.log('Public form URL copied to clipboard:', publicFormUrl);
+        toast.success('Public form URL copied to clipboard!');
+      } else {
+        console.error('URL token not found in form data');
+        toast.error('URL token not found');
+      }
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
+      toast.error('Failed to copy URL to clipboard');
     }
   };
 
@@ -84,11 +101,13 @@ const SubmissionInsightLayout: React.FC<SubmissionInsightLayoutProps> = ({
             </button>
             
             <button
-              onClick={handleShareLink}
+              onClick={handleCopyUrl}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-[var(--color-light-border)] rounded-lg text-[var(--color-black-700)] hover:bg-[var(--color-light-surface)] transition-colors"
             >
-              <HiLink className="w-4 h-4" />
-              Share Link
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy Link
             </button>
           </div>
         </div>

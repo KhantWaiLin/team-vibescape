@@ -70,7 +70,14 @@ const PublicForm: React.FC = () => {
       // Use the new submission format directly
       await apiService.post(API_ENDPOINTS.RESPONSES.CREATE, formData);
       toast.success("Response submitted successfully!");
-      navigate("/submission");
+      
+      // Navigate to success page with form data
+      navigate("/submission-success", {
+        state: {
+          formData: formData,
+          formTitle: form?.title || "Form"
+        }
+      });
     } catch (e) {
       console.error("Submit response error", e);
       toast.error("Failed to submit response. Please try again.");

@@ -94,6 +94,7 @@ const MyForm: React.FC = () => {
 			participantsCount: form.participants_count || 0,
 			viewsCount: form.views_count || 0,
 			username: form.username || "User",
+			urlToken: form.url_token, // Add urlToken from API response
 		})) || [];
 	
 	return (
@@ -167,6 +168,7 @@ const MyForm: React.FC = () => {
 										maxWords={25}
 										username={form.username}
 										onEdit={() => handleEditForm(form.id)}
+										urlToken={form.urlToken}
 									/>
 								))}
 							</div>

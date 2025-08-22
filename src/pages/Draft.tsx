@@ -87,6 +87,7 @@ const Draft: React.FC = () => {
     participantsCount: form.participants_count || 0,
     viewsCount: form.views_count || 0,
     username: form.username || "User",
+    urlToken: form.url_token, // Add urlToken from API response
   })) || [];
 
   // Extract pagination info from meta
@@ -162,6 +163,7 @@ const Draft: React.FC = () => {
                       viewsCount={form.viewsCount}
                       maxWords={25}
                       onEdit={() => handleEditForm(form.id)}
+                      urlToken={form.urlToken}
                     />
                   ))}
                 </div>
