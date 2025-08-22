@@ -154,6 +154,8 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       return {
         ...state,
         user: action.payload,
+        // Ensure isAuthenticated remains true when updating profile
+        isAuthenticated: true,
       };
     case "UPDATE_ADMIN_STATUS":
       return {
@@ -282,6 +284,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         type: "AUTH_SUCCESS",
         payload: { user: data.data.user, token: data.data.token },
       });
+      
+      console.log('✅ AUTH_SUCCESS dispatched, user should now be authenticated');
       
     } catch (error: any) {
       // Handle API errors

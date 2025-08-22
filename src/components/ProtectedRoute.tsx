@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireAdmin = false,
 }) => {
-  const { user, token, isLoading } = useAuth();
+  const { user, token, isLoading, isAuthenticated } = useAuth();
   const location = useLocation();
   const [verifying, setVerifying] = useState<boolean>(false);
   const [valid, setValid] = useState<boolean>(true);
@@ -43,7 +43,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   // Redirect to login if not authenticated
-  if (!user || !token) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

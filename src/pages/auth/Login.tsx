@@ -15,7 +15,9 @@ const Login = () => {
  
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('🔍 Login useEffect - isAuthenticated:', isAuthenticated);
     if (isAuthenticated) {
+      console.log('✅ User authenticated, navigating to home...');
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
