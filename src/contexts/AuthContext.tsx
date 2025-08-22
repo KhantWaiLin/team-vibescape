@@ -212,11 +212,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                   JSON.stringify(response.data.user),
                   30
                 );
-                
+
                 // Set admin status from fresh profile data
-                const adminStatus = response.data.user.role_names?.includes('admin') || false;
+                const adminStatus =
+                  response.data.user.role_names?.includes("admin") || false;
                 dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
-                console.log('✅ Profile refreshed, admin status set to:', adminStatus);
+                console.log(
+                  "✅ Profile refreshed, admin status set to:",
+                  adminStatus
+                );
               }
             } catch (error) {
               removeAuthCookie("authToken");
@@ -259,34 +263,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           API_ENDPOINTS.USER.PROFILE,
           { headers: { Authorization: `Bearer ${data.data.token}` } }
         );
-        
+
         if (profileResponse.code === 200 && profileResponse.data?.user) {
           // Update user data with roles and permissions
-          dispatch({ type: "UPDATE_PROFILE", payload: profileResponse.data.user });
-          
+          dispatch({
+            type: "UPDATE_PROFILE",
+            payload: profileResponse.data.user,
+          });
+
           // Update stored user data in cookies with roles
-          setAuthCookie("authUser", JSON.stringify(profileResponse.data.user), 30);
-          
+          setAuthCookie(
+            "authUser",
+            JSON.stringify(profileResponse.data.user),
+            30
+          );
+
           // Check admin status immediately and update state
-          const adminStatus = profileResponse.data.user.role_names?.includes('admin') || false;
+          const adminStatus =
+            profileResponse.data.user.role_names?.includes("admin") || false;
           dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
-          
-          console.log('✅ Profile fetched during login:', profileResponse.data.user);
-          console.log('✅ User roles:', profileResponse.data.user.role_names);
-          console.log('✅ Admin status set to:', adminStatus);
+
+          console.log(
+            "✅ Profile fetched during login:",
+            profileResponse.data.user
+          );
+          console.log("✅ User roles:", profileResponse.data.user.role_names);
+          console.log("✅ Admin status set to:", adminStatus);
         }
       } catch (profileError) {
-        console.warn('⚠️ Could not fetch profile during login, using basic user data:', profileError);
+        console.warn(
+          "⚠️ Could not fetch profile during login, using basic user data:",
+          profileError
+        );
       }
-      
+
       // Now dispatch success with the updated user data (including roles if available)
       dispatch({
         type: "AUTH_SUCCESS",
         payload: { user: data.data.user, token: data.data.token },
       });
-      
-      console.log('✅ AUTH_SUCCESS dispatched, user should now be authenticated');
-      
+
+      console.log(
+        "✅ AUTH_SUCCESS dispatched, user should now be authenticated"
+      );
     } catch (error: any) {
       // Handle API errors
       const errorMessage =
@@ -306,7 +325,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const data = await apiService.post<AuthResponse>(
         API_ENDPOINTS.AUTH.REGISTER,
-        { email, password, name }
+        { name, email, password, password_confirmation: password }
       );
 
       // Store in cookies
@@ -319,26 +338,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           API_ENDPOINTS.USER.PROFILE,
           { headers: { Authorization: `Bearer ${data.data.token}` } }
         );
-        
+
         if (profileResponse.code === 200 && profileResponse.data?.user) {
           // Update user data with roles and permissions
-          dispatch({ type: "UPDATE_PROFILE", payload: profileResponse.data.user });
-          
+          dispatch({
+            type: "UPDATE_PROFILE",
+            payload: profileResponse.data.user,
+          });
+
           // Update stored user data in cookies with roles
-          setAuthCookie("authUser", JSON.stringify(profileResponse.data.user), 30);
-          
+          setAuthCookie(
+            "authUser",
+            JSON.stringify(profileResponse.data.user),
+            30
+          );
+
           // Check admin status immediately and update state
-          const adminStatus = profileResponse.data.user.role_names?.includes('admin') || false;
+          const adminStatus =
+            profileResponse.data.user.role_names?.includes("admin") || false;
           dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
-          
-          console.log('✅ Profile fetched during registration:', profileResponse.data.user);
-          console.log('✅ User roles:', profileResponse.data.user.role_names);
-          console.log('✅ Admin status set to:', adminStatus);
+
+          console.log(
+            "✅ Profile fetched during registration:",
+            profileResponse.data.user
+          );
+          console.log("✅ User roles:", profileResponse.data.user.role_names);
+          console.log("✅ Admin status set to:", adminStatus);
         }
       } catch (profileError) {
-        console.warn('⚠️ Could not fetch profile during registration, using basic user data:', profileError);
+        console.warn(
+          "⚠️ Could not fetch profile during registration, using basic user data:",
+          profileError
+        );
       }
-      
+
       // Now dispatch success with the updated user data (including roles if available)
       dispatch({
         type: "AUTH_SUCCESS",
@@ -371,30 +404,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Fetch user profile with roles and permissions
   const fetchProfile = async () => {
     if (!state.token) {
-      console.warn('No token available to fetch profile');
+      console.warn("No token available to fetch profile");
       return;
     }
 
     try {
-      const response = await apiService.get<ProfileResponse>(API_ENDPOINTS.USER.PROFILE);
-      
+      const response = await apiService.get<ProfileResponse>(
+        API_ENDPOINTS.USER.PROFILE
+      );
+
       if (response.code === 200 && response.data?.user) {
         // Update user data with roles and permissions
         dispatch({ type: "UPDATE_PROFILE", payload: response.data.user });
-        
+
         // Check admin status immediately and update state
-        const adminStatus = response.data.user.role_names?.includes('admin') || false;
+        const adminStatus =
+          response.data.user.role_names?.includes("admin") || false;
         dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
-        
+
         // Update stored user data in cookies
         setAuthCookie("authUser", JSON.stringify(response.data.user), 30);
-        
-        console.log('✅ Profile fetched successfully:', response.data.user);
-        console.log('✅ User roles:', response.data.user.role_names);
-        console.log('✅ Admin status updated to:', adminStatus);
+
+        console.log("✅ Profile fetched successfully:", response.data.user);
+        console.log("✅ User roles:", response.data.user.role_names);
+        console.log("✅ Admin status updated to:", adminStatus);
       }
     } catch (error: any) {
-      console.error('❌ Error fetching profile:', error);
+      console.error("❌ Error fetching profile:", error);
       // Don't throw error here to avoid breaking the app
     }
   };
@@ -405,7 +441,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // if (isAdmin) { /* show admin features */ }
   // if (hasRole('moderator')) { /* show moderator features */ }
   // if (hasPermission('delete forms')) { /* show delete button */ }
-  
+
   const hasRole = (role: string): boolean => {
     return state.user?.role_names?.includes(role) || false;
   };

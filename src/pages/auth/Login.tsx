@@ -5,12 +5,15 @@ import bgImage from "../../assets/images/login_bg.png";
 import StarImage from "../../assets/images/star.png";
 
 const Login = () => {
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [localError, setLocalError] = useState("");
   
-  const { login, isAuthenticated, error, clearError } = useAuth();
+  const { login, register, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
  
   // Redirect if already authenticated
@@ -36,14 +39,37 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
-      // Login successful - useAuth will handle the state
-      // Navigation will happen automatically via useEffect
+      if (isLoginMode) {
+        await login(email, password);
+        // Login successful - useAuth will handle the state
+        // Navigation will happen automatically via useEffect
+      } else {
+        // Check if passwords match
+        if (password !== passwordConfirmation) {
+          setLocalError("Passwords do not match");
+          return;
+        }
+        
+        // Register with a default name since we removed the name field
+        // You can modify this to use email as name or ask backend to make name optional
+        await register(email, password, email.split('@')[0]);
+        // Registration successful - useAuth will handle the state
+        // Navigation will happen automatically via useEffect
+      }
     } catch (error) {
-      setLocalError("Login failed. Please check your credentials.");
+      setLocalError(isLoginMode ? "Login failed. Please check your credentials." : "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const toggleMode = () => {
+    setIsLoginMode(!isLoginMode);
+    setLocalError("");
+    // Clear form fields when switching modes
+    setEmail("");
+    setPassword("");
+    setPasswordConfirmation("");
   };
 
   return (
@@ -57,7 +83,7 @@ const Login = () => {
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
-      {/* Right side - Login form */}
+      {/* Right side - Login/Register form */}
       <div className="flex flex-1 lg:w-2/3 items-center justify-center">
         <div className="w-full max-w-md">
           {/* Mobile logo removed */}
@@ -65,11 +91,14 @@ const Login = () => {
             <div className="flex flex-col justify-start items-start gap-6 mb-3">
               <img src={StarImage} alt="star-image" className="w-10 h-10" />
               <h2 className="text-3xl m-0 font-[700] font-satoshi text-[var(--color-black-900)]">
-                Welcome back!
+                {isLoginMode ? "Welcome back!" : "Create account"}
               </h2>
             </div>
             <p className="text-[var(--color-black-500)] font-[400] text-[14px]">
-              Get started with the simplest way to create forms.
+              {isLoginMode 
+                ? "Get started with the simplest way to create forms."
+                : "Join us and start creating amazing forms today."
+              }
             </p>
           </div>
 
@@ -101,6 +130,7 @@ const Login = () => {
                 placeholder="Enter your email"
               />
             </div>
+
             <div>
               <label
                 htmlFor="password"
@@ -112,7 +142,7 @@ const Login = () => {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete={isLoginMode ? "current-password" : "new-password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -121,32 +151,61 @@ const Login = () => {
                 placeholder="Enter your password"
               />
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  disabled={isSubmitting}
-                  className="h-4 w-4 focus:ring-[var(--color-green-500)] border-[var(--color-black-300)] rounded disabled:opacity-50"
-                />
+
+            {/* Password confirmation field - only show in registration mode */}
+            {!isLoginMode && (
+              <div>
                 <label
-                  htmlFor="remember-me"
-                  className="ml-2 block font-[300] text-sm text-[var(--color-black-700)]"
+                  htmlFor="password_confirmation"
+                  className="block text-sm font-medium text-[var(--color-black-700)] mb-2"
                 >
-                  Remember me
+                  Confirm Password
                 </label>
-              </div>
-              <div className="text-sm">
-                <button
-                  type="button"
+                <input
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="password"
+                  autoComplete="new-password"
+                  required={!isLoginMode}
+                  value={passwordConfirmation}
+                  onChange={(e) => setPasswordConfirmation(e.target.value)}
                   disabled={isSubmitting}
-                  className="text-[12px] font-[400] text-[var(--color-green-600)] hover:text-[var(--color-green-700)] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Forgot password?
-                </button>
+                  className="w-full px-4 py-3 border border-[var(--color-black-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-green-500)] focus:border-[var(--color-green-500)] transition-colors duration-200 text-[var(--color-black-900)] placeholder-[var(--color-black-500)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="Confirm your password"
+                />
               </div>
-            </div>
+            )}
+
+            {/* Remember me and Forgot password - only show in login mode */}
+            {isLoginMode && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    disabled={isSubmitting}
+                    className="h-4 w-4 focus:ring-[var(--color-green-500)] border-[var(--color-black-300)] rounded disabled:opacity-50"
+                  />
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 block font-[300] text-sm text-[var(--color-black-700)]"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <div className="text-sm">
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    className="text-[12px] font-[400] text-[var(--color-green-600)] hover:text-[var(--color-green-700)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={isSubmitting}
@@ -155,13 +214,28 @@ const Login = () => {
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Logging in...
+                  {isLoginMode ? "Logging in..." : "Creating account..."}
                 </div>
               ) : (
-                "Log in"
+                isLoginMode ? "Log in" : "Create account"
               )}
             </button>
           </form>
+
+          {/* Toggle between login and registration */}
+          <div className="mt-6 text-center">
+            <p className="text-[var(--color-black-500)] text-sm">
+              {isLoginMode ? "Don't have an account?" : "Already have an account?"}
+              <button
+                type="button"
+                onClick={toggleMode}
+                disabled={isSubmitting}
+                className="ml-1 text-[var(--color-green-600)] hover:text-[var(--color-green-700)] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoginMode ? "Sign up" : "Sign in"}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
