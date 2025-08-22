@@ -68,7 +68,6 @@ const Home: React.FC = () => {
   };
 
   const handleFloatingButtonClick = () => {
-    console.log("Floating button clicked on Home page!");
     handleOpenModal(); // Open the popup modal
   };
 
@@ -92,7 +91,6 @@ const Home: React.FC = () => {
         },
         apiService.getAuthHeaders()
       );
-      console.log("Form created successfully", response);
 
       // Navigate to create form page with the form details
       navigate("/create-form", {
@@ -180,7 +178,7 @@ const Home: React.FC = () => {
               <button
                 onClick={fetchRecentForms}
                 disabled={isLoadingRecent}
-                className="inline-flex items-center gap-2 rounded-full bg-green-500 px-3 py-1 text-sm font-medium text-[var(--color-light-text-inverse)] hover:bg-[var(--color-blue-700)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 rounded-full bg-green-500 px-3 py-1 text-sm font-medium text-[var(--color-light-text-inverse)] hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Refresh recent forms"
               >
                 <svg
@@ -223,7 +221,6 @@ const Home: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {recentForms.map((form: any) => {
                 // Debug logging to identify object rendering issues
-                console.log('Form data:', form);
                 return (
                 <FormCard
                   key={form.id}

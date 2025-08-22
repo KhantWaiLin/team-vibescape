@@ -133,7 +133,7 @@ const DataTableExample: React.FC = () => {
 
   // Handle row click
   const handleRowClick = (row: User, index: number) => {
-    console.log("Clicked row:", row, "at index:", index);
+    // console.log("Clicked row:", row, "at index:", index);
   };
 
   return (

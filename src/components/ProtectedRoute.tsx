@@ -38,7 +38,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       </div>
     );
   }
-  console.log(user, token);
   // If token invalid per backend, redirect to login
   if (token && !valid) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -52,8 +51,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (requireAdmin) {
     // You can add admin role check here later
     // For now, redirect to home if not admin
-    // TODO: Implement proper admin role checking
-    console.log("Admin check required - implement role-based logic");
     return <Navigate to="/" replace />;
   }
 

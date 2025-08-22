@@ -44,7 +44,6 @@ const FormCard: React.FC<FormCardProps> = ({
         const publicFormUrl = `${window.location.origin}/public/form/${urlToken}`;
         await navigator.clipboard.writeText(publicFormUrl);
         toast.success('Public form URL copied to clipboard!');
-        console.log('Public form URL copied to clipboard:', publicFormUrl);
       } else {
         toast.error('URL token not available');
       }

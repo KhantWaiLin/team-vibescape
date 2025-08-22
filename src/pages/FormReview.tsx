@@ -79,7 +79,6 @@ const FormReview: React.FC = () => {
 
       // Show success toast
       toast.success("Form approved and published successfully!");
-      console.log("Form approved and published successfully!");
 
       // Navigate to submission page
       navigate("/submission");

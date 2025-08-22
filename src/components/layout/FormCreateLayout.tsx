@@ -51,7 +51,6 @@ const FormCreateLayout: React.FC<FormCreateLayoutProps> = ({
   };
 
   const handleAddQuestion = (questionType: string) => {
-    console.log(`Adding question type: ${questionType}`);
     if (onQuestionsChange) {
       const newQuestion: Question = {
         // Generate a temporary client-side id for stable selection/updates

@@ -6,12 +6,6 @@ import { getAuthCookie, removeAuthCookie } from "../utils/cookieUtils";
 // API Configuration
 const API_BASE_URL = config.baseUrl;
 
-console.log("🔧 API Service Configuration:", {
-  baseUrl: API_BASE_URL,
-  environment: config.environment,
-  mode: config.mode,
-});
-
 // Create axios instance
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -52,7 +46,6 @@ axiosInstance.interceptors.request.use(
     const authToken = getAuthCookie("authToken");
     if (authToken) {
       config.headers["Authorization"] = `Bearer ${authToken}`;
-      console.log("🔑 Added Bearer token to request");
     }
 
     // For non-GET requests, ensure we have CSRF token
@@ -62,24 +55,14 @@ axiosInstance.interceptors.request.use(
         await axios.get(`${config.baseURL}/sanctum/csrf-cookie`, {
           withCredentials: true,
         });
-        console.log("🛡️ CSRF token obtained");
       } catch (error) {
         console.warn("⚠️ Could not get CSRF token:", error);
       }
     }
 
-    console.log("🚀 API Request:", {
-      method: config.method?.toUpperCase(),
-      url: config.url,
-      baseURL: config.baseURL,
-      headers: config.headers,
-      data: config.data,
-    });
-
     return config;
   },
   (error) => {
-    console.error("❌ Request interceptor error:", error);
     return Promise.reject(error);
   }
 );
@@ -87,11 +70,6 @@ axiosInstance.interceptors.request.use(
 // Response interceptor for better error handling
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log("✅ API Response:", {
-      status: response.status,
-      url: response.config.url,
-      data: response.data,
-    });
     return response;
   },
   async (error) => {
@@ -104,7 +82,6 @@ axiosInstance.interceptors.response.use(
 
     // Handle common errors
     if (error.response?.status === 401) {
-      console.log("🔒 Unauthorized - clearing auth data");
       removeAuthCookie("authToken");
       removeAuthCookie("authUser");
       // You can redirect to login here if needed

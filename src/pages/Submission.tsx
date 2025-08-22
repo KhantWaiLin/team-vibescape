@@ -77,16 +77,16 @@ const Submission: React.FC = () => {
   };
 
   const handleReview = (submissionId: number) => {
-    console.log("Review submission:", submissionId);
+    // console.log("Review submission:", submissionId);
     
   };
 
   const handleApprove = (submissionId: number) => {
-    console.log("Approve submission:", submissionId);
+    // console.log("Approve submission:", submissionId);
   };
 
   const handleReject = (submissionId: number) => {
-    console.log("Reject submission:", submissionId);
+    // console.log("Reject submission:", submissionId);
   };
 
   // Transform API data to SubmissionCard format

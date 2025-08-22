@@ -38,23 +38,12 @@ const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
       try {
         // Create FormData for file upload
         const formData = new FormData();
-        console.log('FormData created:', formData);
-        
+
         // Try to append the file
         formData.append("file", file);
-        console.log('File appended to FormData');
-        
-        // Check what's actually in FormData
-        console.log('FormData entries:');
-        for (let [key, value] of formData.entries()) {
-          console.log(`${key}:`, value, typeof value);
-        }
-        
+
         formData.append("is_public", "1");
-        for (let [key, value] of formData.entries()) {
-          console.log(`${key}:`, value, typeof value);
-        }
-        
+
         const response: any = await apiService.post(
           "/api/files/upload",
           formData,
@@ -78,8 +67,6 @@ const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
       } finally {
         setUploading(false);
       }
-    } else {
-      console.log('No file selected or file is null/undefined');
     }
   };
 
@@ -100,9 +87,9 @@ const FileInput: React.FC<FileInputProps> = ({ question, onChange }) => {
           title={question.placeholder || "Choose file"}
           disabled={uploading}
           accept="*/*"
-          onFocus={() => console.log('File input focused')}
-          onBlur={() => console.log('File input blurred')}
-          onClick={() => console.log('File input clicked')}
+          // onFocus={() => console.log("File input focused")}
+          // onBlur={() => console.log("File input blurred")}
+          // onClick={() => console.log("File input clicked")}
         />
         <div
           className="border-2 border-dashed border-light-border bg-light-bg rounded-lg p-8 text-center transition-colors"

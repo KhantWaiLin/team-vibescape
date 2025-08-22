@@ -6,7 +6,11 @@ import { FormCreateLayout } from "../components/layout";
 import FormPreview from "../components/FormPreview";
 import { API_ENDPOINTS, apiService } from "../services/api";
 import toast from "react-hot-toast";
-import { parseFormOptions, separateQuestionsByStatus, prepareQuestionsForSubmission } from "../utils";
+import {
+  parseFormOptions,
+  separateQuestionsByStatus,
+  prepareQuestionsForSubmission,
+} from "../utils";
 
 const EditForm = () => {
   const { formId } = useParams<{ formId: string }>();
@@ -112,21 +116,30 @@ const EditForm = () => {
       setSaving(true);
 
       // Analyze questions to identify new vs existing
-      const { newQuestions, existingQuestions } = separateQuestionsByStatus(questions);
-      
-      console.log('=== QUESTION ANALYSIS ===');
-      console.log(`Total questions: ${questions.length}`);
-      console.log(`New questions: ${newQuestions.length}`);
-      console.log(`Existing questions: ${existingQuestions.length}`);
-      
-      if (newQuestions.length > 0) {
-        console.log('New questions:', newQuestions.map(q => ({ text: q.question_text, type: q.question_type })));
-      }
-      
-      if (existingQuestions.length > 0) {
-        console.log('Existing questions:', existingQuestions.map(q => ({ id: q.id, text: q.question_text, type: q.question_type })));
-      }
-      console.log('========================');
+      // const { newQuestions, existingQuestions }: any =
+      //   separateQuestionsByStatus(questions);
+
+      // if (newQuestions.length > 0) {
+      //   console.log(
+      //     "New questions:",
+      //     newQuestions.map((q) => ({
+      //       text: q.question_text,
+      //       type: q.question_type,
+      //     }))
+      //   );
+      // }
+
+      // if (existingQuestions.length > 0) {
+      //   console.log(
+      //     "Existing questions:",
+      //     existingQuestions.map((q) => ({
+      //       id: q.id,
+      //       text: q.question_text,
+      //       type: q.question_type,
+      //     }))
+      //   );
+      // }
+      // console.log("========================");
 
       // Prepare the complete request body in the required format
       const requestBody = {
@@ -149,7 +162,7 @@ const EditForm = () => {
       toast.success(
         `Form updated successfully! ${questions.length} questions saved.`
       );
-      
+
       // Navigate to draft page after successful save
       navigate("/");
     } catch (e) {

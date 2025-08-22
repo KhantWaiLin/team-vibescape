@@ -36,8 +36,6 @@ const FormViewer: React.FC<FormViewerProps> = ({
       ...prev,
       [questionId]: value
     }));
-    console.log("value and quesiontId:", value, questionId);
-    console.log(formData);
   };
 
   const getQuestionKey = (question: Question, index: number): string => {
@@ -95,7 +93,6 @@ const FormViewer: React.FC<FormViewerProps> = ({
             answer: value
           };
         case 'file':
-          console.log(value);
           return {
             question_id: Number(questionId),
             answer: {
@@ -139,8 +136,6 @@ const FormViewer: React.FC<FormViewerProps> = ({
     
     if (onSubmit) {
       onSubmit(submissionData);
-    } else {
-      console.log('Form submitted:', submissionData);
     }
   };
 

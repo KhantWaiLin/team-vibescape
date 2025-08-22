@@ -10,14 +10,14 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
   const location = useLocation();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const [navItems, setNavItems] = useState<any[]>([]);
   
   // Update navigation items when user admin status changes
   useEffect(() => {
-    const items = chooseNavItems(isAdmin());
+    const items = chooseNavItems(isAdmin);
     setNavItems(items);
-  }, [isAdmin()]);
+  }, [user, isAdmin]); // Track user object and isAdmin state variable
   
   const isActive = (path: string) => {
     return location.pathname === path;

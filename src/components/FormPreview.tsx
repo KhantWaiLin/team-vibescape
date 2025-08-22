@@ -16,7 +16,7 @@ const FormPreview: React.FC<FormPreviewProps> = ({
   onBackToEdit 
 }) => {
   const handleSubmit = (formData: FormSubmissionPayload) => {
-    console.log('Form submitted:', formData);
+    // console.log('Form submitted:', formData);
     // Handle form submission here
   };
 

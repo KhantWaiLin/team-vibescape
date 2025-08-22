@@ -6,6 +6,7 @@ import {
 	FilterTabs,
 	FormCard,
 	Pagination,
+	NewFormModal,
 } from "../components";
 import { filterTabs, getApiStatus } from "../const/const";
 import { API_ENDPOINTS, apiService } from "../services/api";
@@ -20,6 +21,8 @@ const MyForm: React.FC = () => {
 	const [searchKeyword, setSearchKeyword] = useState("");
 	const isInitialMount = useRef(true);
 	const navigate = useNavigate();
+	const [isNewFormModalOpen, setIsNewFormModalOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const fetchForms = async (
 		page: number = 1,
@@ -53,9 +56,6 @@ const MyForm: React.FC = () => {
 		fetchForms(currentPage, 10, searchKeyword, getApiStatus(activeTab));
 	}, [currentPage, activeTab, searchKeyword]);
 
-	const handleNewForm = () => {
-		navigate("/create-form");
-	};
 
 	const handleTabChange = (tabId: string) => {
 		if (tabId === activeTab) return;
@@ -77,6 +77,50 @@ const MyForm: React.FC = () => {
 
 	const handleEditForm = (formId: number) => {
 		navigate(`/create-form/${formId}`);
+	};
+
+	const handleNewFormClick = () => {
+		setIsNewFormModalOpen(true);
+	};
+
+	const handleCloseNewFormModal = () => {
+		setIsNewFormModalOpen(false);
+	};
+
+	const handleCreateForm = async (title: string, description: string) => {
+		setIsLoading(true);
+		try {
+			// Create the form via API
+			const response = await apiService.post<any>(
+				API_ENDPOINTS.FORMS.CREATE,
+				{
+					title,
+					description,
+				},
+				apiService.getAuthHeaders()
+			);
+
+			// Navigate to create form page with the form details
+			navigate("/create-form", {
+				state: {
+					data: {
+						title,
+						description,
+						response: response.data,
+						questions: [],
+					},
+				},
+			});
+
+			// Refresh the forms list to show the newly created form
+			fetchForms(currentPage, 10, searchKeyword, getApiStatus(activeTab));
+		} catch (error) {
+			console.error("Error creating form:", error);
+			// You might want to show an error message to the user here
+			return; // Don't navigate on error
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	// Map API data to FormCard props
@@ -109,14 +153,10 @@ const MyForm: React.FC = () => {
 
 					{/* New Form Button */}
 					<button
-						onClick={handleNewForm}
-						className="inline-flex items-center gap-3 bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-[var(--color-light-text-inverse)] px-6 py-3 rounded-lg font-semibold transition-colors"
+						onClick={handleNewFormClick}
+						className="inline-flex items-center gap-2 rounded-full bg-[var(--color-green-600)] px-4 py-2 text-sm font-medium text-[var(--color-light-text-inverse)] hover:bg-[var(--color-green-700)]"
 					>
-						<div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-							<span className="text-[var(--color-green-600)] text-lg font-bold">
-								+
-							</span>
-						</div>
+						<span className="text-lg">+</span>
 						New Form
 					</button>
 				</div>
@@ -189,6 +229,11 @@ const MyForm: React.FC = () => {
 					)}
 				</div>
 			</div>
+			<NewFormModal
+				isOpen={isNewFormModalOpen}
+				onClose={handleCloseNewFormModal}
+				onSubmit={handleCreateForm}
+			/>
 		</div>
 	);
 };

@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import type { ReactNode } from "react";
 import { apiService, API_ENDPOINTS } from "../services/api";
-import { setAuthCookie, getAuthCookie, removeAuthCookie } from "../utils/cookieUtils";
+import {
+  setAuthCookie,
+  getAuthCookie,
+  removeAuthCookie,
+} from "../utils/cookieUtils";
 import { verifyAuthToken } from "../services/api";
 
 // Types
@@ -54,6 +58,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  isAdmin: boolean; // Add isAdmin as a state variable
 }
 
 interface AuthContextType {
@@ -63,6 +68,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  isAdmin: boolean; // Change from function to boolean
 
   // Actions
   login: (email: string, password: string) => Promise<void>;
@@ -72,7 +78,6 @@ interface AuthContextType {
   fetchProfile: () => Promise<void>;
 
   // Utility functions
-  isAdmin: () => boolean;
   hasRole: (role: string) => boolean;
   hasPermission: (permission: string) => boolean;
   getAuthHeaders: () => Record<string, string>;
@@ -86,7 +91,8 @@ type AuthAction =
   | { type: "AUTH_LOGOUT" }
   | { type: "CLEAR_ERROR" }
   | { type: "SET_LOADING"; payload: boolean }
-  | { type: "UPDATE_PROFILE"; payload: User };
+  | { type: "UPDATE_PROFILE"; payload: User }
+  | { type: "UPDATE_ADMIN_STATUS"; payload: boolean };
 
 // Initial state
 const initialState: AuthState = {
@@ -95,6 +101,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: true,
   error: null,
+  isAdmin: false, // Initialize isAdmin
 };
 
 // Reducer
@@ -148,6 +155,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         ...state,
         user: action.payload,
       };
+    case "UPDATE_ADMIN_STATUS":
+      return {
+        ...state,
+        isAdmin: action.payload,
+      };
     default:
       return state;
   }
@@ -183,12 +195,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 type: "AUTH_SUCCESS",
                 payload: { user: userData, token: storedToken },
               });
-              
+
               // Fetch fresh profile data with roles and permissions
-              const response = await apiService.get<ProfileResponse>(API_ENDPOINTS.USER.PROFILE);
+              const response = await apiService.get<ProfileResponse>(
+                API_ENDPOINTS.USER.PROFILE
+              );
               if (response.code === 200 && response.data?.user) {
-                dispatch({ type: "UPDATE_PROFILE", payload: response.data.user });
-                setAuthCookie("authUser", JSON.stringify(response.data.user), 30);
+                dispatch({
+                  type: "UPDATE_PROFILE",
+                  payload: response.data.user,
+                });
+                setAuthCookie(
+                  "authUser",
+                  JSON.stringify(response.data.user),
+                  30
+                );
               }
             } catch (error) {
               removeAuthCookie("authToken");
@@ -213,22 +234,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: "AUTH_START" });
 
     try {
-      const data = await apiService.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, {
-        email,
-        password,
-      });
+      const data = await apiService.post<AuthResponse>(
+        API_ENDPOINTS.AUTH.LOGIN,
+        {
+          email,
+          password,
+        }
+      );
 
       // Store in cookies
       setAuthCookie("authToken", data.data.token, 30); // 30 days expiry
       setAuthCookie("authUser", JSON.stringify(data.data.user), 30);
 
+      // Fetch fresh profile data with roles and permissions using the token we just received
+      try {
+        const profileResponse = await apiService.get<ProfileResponse>(
+          API_ENDPOINTS.USER.PROFILE,
+          { headers: { Authorization: `Bearer ${data.data.token}` } }
+        );
+        
+        if (profileResponse.code === 200 && profileResponse.data?.user) {
+          // Update user data with roles and permissions
+          dispatch({ type: "UPDATE_PROFILE", payload: profileResponse.data.user });
+          
+          // Update stored user data in cookies with roles
+          setAuthCookie("authUser", JSON.stringify(profileResponse.data.user), 30);
+          
+          // Check admin status immediately and update state
+          const adminStatus = profileResponse.data.user.role_names?.includes('admin') || false;
+          dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
+          
+          console.log('✅ Profile fetched during login:', profileResponse.data.user);
+          console.log('✅ User roles:', profileResponse.data.user.role_names);
+          console.log('✅ Admin status set to:', adminStatus);
+        }
+      } catch (profileError) {
+        console.warn('⚠️ Could not fetch profile during login, using basic user data:', profileError);
+      }
+      
+      // Now dispatch success with the updated user data (including roles if available)
       dispatch({
         type: "AUTH_SUCCESS",
         payload: { user: data.data.user, token: data.data.token },
       });
-      
-      // Fetch fresh profile data with roles and permissions
-      await fetchProfile();
       
     } catch (error: any) {
       // Handle API errors
@@ -256,6 +304,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthCookie("authToken", data.data.token, 30); // 30 days expiry
       setAuthCookie("authUser", JSON.stringify(data.data.user), 30);
 
+      // Fetch fresh profile data with roles and permissions using the token we just received
+      try {
+        const profileResponse = await apiService.get<ProfileResponse>(
+          API_ENDPOINTS.USER.PROFILE,
+          { headers: { Authorization: `Bearer ${data.data.token}` } }
+        );
+        
+        if (profileResponse.code === 200 && profileResponse.data?.user) {
+          // Update user data with roles and permissions
+          dispatch({ type: "UPDATE_PROFILE", payload: profileResponse.data.user });
+          
+          // Update stored user data in cookies with roles
+          setAuthCookie("authUser", JSON.stringify(profileResponse.data.user), 30);
+          
+          // Check admin status immediately and update state
+          const adminStatus = profileResponse.data.user.role_names?.includes('admin') || false;
+          dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
+          
+          console.log('✅ Profile fetched during registration:', profileResponse.data.user);
+          console.log('✅ User roles:', profileResponse.data.user.role_names);
+          console.log('✅ Admin status set to:', adminStatus);
+        }
+      } catch (profileError) {
+        console.warn('⚠️ Could not fetch profile during registration, using basic user data:', profileError);
+      }
+      
+      // Now dispatch success with the updated user data (including roles if available)
       dispatch({
         type: "AUTH_SUCCESS",
         payload: { user: data.data.user, token: data.data.token },
@@ -298,10 +373,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Update user data with roles and permissions
         dispatch({ type: "UPDATE_PROFILE", payload: response.data.user });
         
+        // Check admin status immediately and update state
+        const adminStatus = response.data.user.role_names?.includes('admin') || false;
+        dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
+        
         // Update stored user data in cookies
         setAuthCookie("authUser", JSON.stringify(response.data.user), 30);
         
         console.log('✅ Profile fetched successfully:', response.data.user);
+        console.log('✅ User roles:', response.data.user.role_names);
+        console.log('✅ Admin status updated to:', adminStatus);
       }
     } catch (error: any) {
       console.error('❌ Error fetching profile:', error);
@@ -312,23 +393,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Utility functions - updated for actual user structure
   // Usage examples:
   // const { isAdmin, hasRole, hasPermission } = useAuth();
-  // if (isAdmin()) { /* show admin features */ }
+  // if (isAdmin) { /* show admin features */ }
   // if (hasRole('moderator')) { /* show moderator features */ }
   // if (hasPermission('delete forms')) { /* show delete button */ }
   
-  const isAdmin = (): boolean => {
-    return state.user?.role_names?.includes('admin') || false;
-  };
-
   const hasRole = (role: string): boolean => {
     return state.user?.role_names?.includes(role) || false;
   };
 
   const hasPermission = (permission: string): boolean => {
     // Check if user has the permission through any of their roles
-    return state.user?.roles?.some(role => 
-      role.permissions?.some(perm => perm.name === permission)
-    ) || false;
+    return (
+      state.user?.roles?.some((role) =>
+        role.permissions?.some((perm) => perm.name === permission)
+      ) || false
+    );
   };
 
   const getAuthHeaders = (): Record<string, string> => {
@@ -345,7 +424,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     clearError,
     fetchProfile,
-    isAdmin,
     hasRole,
     hasPermission,
     getAuthHeaders,

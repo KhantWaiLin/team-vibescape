@@ -6,5 +6,6 @@ import { navItems, adminNavItems } from '../const/const';
  * @returns Navigation items array
  */
 export const chooseNavItems = (isAdmin: boolean) => {
+  console.log(isAdmin);
   return isAdmin ? adminNavItems : navItems;
 };
