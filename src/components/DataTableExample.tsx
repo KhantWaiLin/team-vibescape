@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DataTable, { Column } from "./DataTable";
+import DataTable, { type Column } from "./DataTable";
 
 // Example data type
 interface User {
@@ -129,8 +129,6 @@ const DataTableExample: React.FC = () => {
   const handleSort = (key: string, direction: "asc" | "desc") => {
     setSortKey(key);
     setSortDirection(direction);
-    // Here you would typically sort your data or make an API call
-    console.log(`Sorting by ${key} in ${direction} order`);
   };
 
   // Handle row click

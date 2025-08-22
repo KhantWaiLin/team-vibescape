@@ -107,6 +107,39 @@ const SubmissionInsight = () => {
     fetchFormSubmissions();
   }, [formId]);
 
+  // Handle export responses
+  const handleExportResponses = async () => {
+    if (!formId) {
+      toast.error("No form ID available for export");
+      return;
+    }
+
+    try {
+      const response = await apiService.get(
+        `/api/form-submissions/export/${formId}`,
+        {
+          ...apiService.getAuthHeaders(),
+          responseType: 'blob' // Important for file downloads
+        }
+      ) as Blob;
+
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `form-submissions-${formId}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Export completed successfully!");
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error("Failed to export responses");
+    }
+  };
+
   // Table columns configuration
   const columns: Column<typeof submissions[0]>[] = [
     {
@@ -164,6 +197,8 @@ const SubmissionInsight = () => {
       ),
     },
   ];
+
+  
 
   // Show loading state
   if (loading) {
@@ -281,7 +316,10 @@ const SubmissionInsight = () => {
           </h2>
           
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--color-black-600)] border border-[var(--color-light-border)] rounded-lg hover:bg-[var(--color-light-bg)] transition-colors">
+            <button 
+              onClick={() => handleExportResponses()}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--color-black-600)] border border-[var(--color-light-border)] rounded-lg hover:bg-[var(--color-light-bg)] transition-colors"
+            >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>

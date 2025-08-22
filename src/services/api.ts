@@ -281,6 +281,8 @@ export const API_ENDPOINTS = {
     SHOW: (formId: string | number, responseId: string | number) =>
       `/forms/${formId}/responses/${responseId}`,
     CREATE: `/api/form-submissions/multiple`,
+    EXPORT: (formId: string | number) =>
+      `/api/form-submissions/export/${formId}`,
   },
 
   // User endpoints

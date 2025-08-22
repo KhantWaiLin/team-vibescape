@@ -106,7 +106,6 @@ Every form automatically includes a required email field at the top. This field:
 const handleSubmit = async (submissionData: FormSubmissionPayload) => {
   try {
     await apiService.post('/api/submit', submissionData);
-    console.log('Form submitted successfully');
   } catch (error) {
     console.error('Submission failed:', error);
   }
