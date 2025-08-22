@@ -88,9 +88,9 @@ const QuestionBuilderBlock: React.FC<QuestionBuilderBlockProps> = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                if (question.id !== undefined) {
-                  onDelete(question.id);
-                }
+                            if (question.id !== undefined) {
+              onDelete(Number(question.id));
+            }
               }}
               className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
             >
@@ -138,7 +138,7 @@ const QuestionBuilderBlock: React.FC<QuestionBuilderBlockProps> = ({
             onClick={(e) => {
               e.stopPropagation();
               if (question.id !== undefined) {
-                onDelete(question.id);
+                onDelete(Number(question.id));
               }
             }}
             className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
