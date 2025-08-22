@@ -18,17 +18,29 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const location = useLocation();
   const [verifying, setVerifying] = useState<boolean>(false);
   const [valid, setValid] = useState<boolean>(true);
+  const [lastVerifiedToken, setLastVerifiedToken] = useState<string | null>(null);
 
   useEffect(() => {
     const check = async () => {
-      if (!token) return;
+      // Only verify if we have a token and it's different from the last verified one
+      if (!token || token === lastVerifiedToken) return;
+      
       setVerifying(true);
-      const ok = await verifyAuthToken();
-      setValid(ok);
-      setVerifying(false);
+      try {
+        const ok = await verifyAuthToken();
+        setValid(ok);
+        if (ok) {
+          setLastVerifiedToken(token); // Remember this token as verified
+        }
+      } catch (error) {
+        console.warn('Token verification failed:', error);
+        setValid(false);
+      } finally {
+        setVerifying(false);
+      }
     };
     check();
-  }, [token, location.pathname]);
+  }, [token, lastVerifiedToken]); // Remove location.pathname dependency
 
   // Show loading spinner while checking authentication
   if (isLoading || verifying) {

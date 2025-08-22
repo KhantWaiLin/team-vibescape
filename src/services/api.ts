@@ -3,6 +3,13 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { config } from "../utils/config";
 import { getAuthCookie, removeAuthCookie } from "../utils/cookieUtils";
 
+// Global logout callback - will be set by AuthContext
+let globalLogoutCallback: (() => void) | null = null;
+
+export const setGlobalLogoutCallback = (callback: () => void) => {
+  globalLogoutCallback = callback;
+};
+
 // API Configuration
 const API_BASE_URL = config.baseUrl;
 
@@ -82,9 +89,13 @@ axiosInstance.interceptors.response.use(
 
     // Handle common errors
     if (error.response?.status === 401) {
+      console.log('🔒 401 Unauthorized - Token expired, logging out...');
       removeAuthCookie("authToken");
       removeAuthCookie("authUser");
-      // You can redirect to login here if needed
+      // Call global logout callback if available
+      if (globalLogoutCallback) {
+        globalLogoutCallback();
+      }
     }
 
     if (error.response?.status === 422) {

@@ -16,7 +16,7 @@ import { requireIcon } from "../../assets/icons/icons";
 interface QuestionBuilderBlockProps {
   question: Question;
   onUpdate: (question: Question) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number | string) => void;
   isSelected: boolean;
   onSelect: (question: Question) => void;
 }
@@ -88,9 +88,9 @@ const QuestionBuilderBlock: React.FC<QuestionBuilderBlockProps> = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                            if (question.id !== undefined) {
-              onDelete(Number(question.id));
-            }
+              if (question.id !== undefined) {
+                onDelete(question.id);
+              }
               }}
               className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
             >
@@ -138,7 +138,7 @@ const QuestionBuilderBlock: React.FC<QuestionBuilderBlockProps> = ({
             onClick={(e) => {
               e.stopPropagation();
               if (question.id !== undefined) {
-                onDelete(Number(question.id));
+                onDelete(question.id);
               }
             }}
             className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import type { ReactNode } from "react";
-import { apiService, API_ENDPOINTS } from "../services/api";
+import { apiService, API_ENDPOINTS, setGlobalLogoutCallback } from "../services/api";
 import {
   setAuthCookie,
   getAuthCookie,
@@ -178,6 +178,18 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  // Logout function
+  const logout = () => {
+    removeAuthCookie("authToken");
+    removeAuthCookie("authUser");
+    dispatch({ type: "AUTH_LOGOUT" });
+  };
+
+  // Register global logout callback for API interceptor
+  useEffect(() => {
+    setGlobalLogoutCallback(logout);
+  }, []);
+
   // Check for existing token on app load
   useEffect(() => {
     const initializeAuth = async () => {
@@ -199,32 +211,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               });
 
               // Fetch fresh profile data with roles and permissions
-              const response = await apiService.get<ProfileResponse>(
-                API_ENDPOINTS.USER.PROFILE
-              );
-              if (response.code === 200 && response.data?.user) {
-                dispatch({
-                  type: "UPDATE_PROFILE",
-                  payload: response.data.user,
-                });
-                setAuthCookie(
-                  "authUser",
-                  JSON.stringify(response.data.user),
-                  30
+              try {
+                const response = await apiService.get<ProfileResponse>(
+                  API_ENDPOINTS.USER.PROFILE
                 );
+                if (response.code === 200 && response.data?.user) {
+                  dispatch({
+                    type: "UPDATE_PROFILE",
+                    payload: response.data.user,
+                  });
+                  setAuthCookie(
+                    "authUser",
+                    JSON.stringify(response.data.user),
+                    30
+                  );
 
-                // Set admin status from fresh profile data
-                const adminStatus =
-                  response.data.user.role_names?.includes("admin") || false;
-                dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
-                console.log(
-                  "✅ Profile refreshed, admin status set to:",
-                  adminStatus
-                );
+                  // Set admin status from fresh profile data
+                  const adminStatus =
+                    response.data.user.role_names?.includes("admin") || false;
+                  dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
+                  console.log(
+                    "✅ Profile refreshed, admin status set to:",
+                    adminStatus
+                  );
+                }
+              } catch (profileError: any) {
+                console.warn('⚠️ Profile fetch failed during initialization:', profileError);
+                // If profile fetch fails with 401, the token is invalid - logout completely
+                if (profileError?.response?.status === 401) {
+                  console.log('❌ Token expired during initialization, logging out...');
+                  removeAuthCookie("authToken");
+                  removeAuthCookie("authUser");
+                  dispatch({ type: "AUTH_LOGOUT" });
+                  return; // Exit early to prevent further processing
+                }
               }
             } catch (error) {
+              console.warn('⚠️ Error during token validation:', error);
               removeAuthCookie("authToken");
               removeAuthCookie("authUser");
+              dispatch({ type: "AUTH_LOGOUT" });
             }
           } else {
             removeAuthCookie("authToken");
@@ -389,13 +415,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Logout function
-  const logout = () => {
-    removeAuthCookie("authToken");
-    removeAuthCookie("authUser");
-    dispatch({ type: "AUTH_LOGOUT" });
-  };
-
   // Clear error
   const clearError = () => {
     dispatch({ type: "CLEAR_ERROR" });
@@ -431,6 +450,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     } catch (error: any) {
       console.error("❌ Error fetching profile:", error);
+      // If the error is 401 (unauthorized), logout the user
+      if (error?.response?.status === 401) {
+        console.log('❌ Token expired during profile fetch, logging out...');
+        removeAuthCookie("authToken");
+        removeAuthCookie("authUser");
+        dispatch({ type: "AUTH_LOGOUT" });
+      }
       // Don't throw error here to avoid breaking the app
     }
   };

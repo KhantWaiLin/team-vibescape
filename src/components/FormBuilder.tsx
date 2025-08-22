@@ -35,7 +35,7 @@ const DraggableQuestionBlock: React.FC<{
   question: Question;
   index: number;
   onUpdate: (question: Question) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number | string) => void;
   isSelected: boolean;
   onSelect: (question: Question | null) => void;
 }> = ({ question, index, onUpdate, onDelete, isSelected, onSelect }) => {
@@ -114,7 +114,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
     }
   };
 
-  const deleteQuestion = (id: number) => {
+  const deleteQuestion = (id: number | string) => {
     const updatedQuestions = questions.filter((q) => q.id !== id);
     onQuestionsChange(updatedQuestions);
 
