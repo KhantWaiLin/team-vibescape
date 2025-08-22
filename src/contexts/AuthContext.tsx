@@ -210,6 +210,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                   JSON.stringify(response.data.user),
                   30
                 );
+                
+                // Set admin status from fresh profile data
+                const adminStatus = response.data.user.role_names?.includes('admin') || false;
+                dispatch({ type: "UPDATE_ADMIN_STATUS", payload: adminStatus });
+                console.log('✅ Profile refreshed, admin status set to:', adminStatus);
               }
             } catch (error) {
               removeAuthCookie("authToken");

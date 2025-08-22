@@ -182,7 +182,8 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 						<div className="w-px h-8 bg-[var(--color-light-border)] mx-2"></div>
 						<button
 							onClick={handleViewSubmissions}
-							className="inline-flex items-center justify-center gap-3 bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md min-w-[180px] h-[44px] text-sm"
+							className="inline-flex items-center justify-center bg-[var(--color-green-600)] hover:bg-[var(--color-green-700)] text-white px-4 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md w-[44px] h-[44px] text-sm relative group"
+							title="View Submissions"
 						>
 							<svg
 								className="w-5 h-5"
@@ -197,7 +198,12 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 									d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
 								/>
 							</svg>
-							View Submissions
+							
+							{/* Tooltip */}
+							<div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+								View Submissions
+								<div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+							</div>
 						</button>
 					</>
 				)}
