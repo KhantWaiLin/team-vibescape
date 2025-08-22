@@ -98,6 +98,7 @@ const CreateForm = () => {
       toast.success(
         `Draft saved successfully! ${questions.length} questions saved.`
       );
+      navigate("/");
     } catch (e) {
       console.error("Failed to save draft", e);
       toast.error("Failed to save draft. Please try again.");
@@ -127,7 +128,7 @@ const CreateForm = () => {
 
       if (response.code === 200) {
         toast.success("Form submitted to admin successfully!");
-        
+
         // Navigate to home page after successful submission
         navigate("/");
       } else {

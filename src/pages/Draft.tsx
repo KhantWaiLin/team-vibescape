@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryDropdown from "../components/CategoryDropdown";
 import { FormCard, SearchBar, Pagination } from "../components";
@@ -12,6 +12,7 @@ const Draft: React.FC = () => {
   const [perPage] = useState(10);
   const [loading, setLoading] = useState(false);
   const [apiData, setApiData] = useState<any>(null);
+  const isInitialMount = useRef(true);
   const navigate = useNavigate();
 
   // Fetch forms with draft status
@@ -39,26 +40,33 @@ const Draft: React.FC = () => {
     }
   };
 
-  // Load forms on component mount and when filters change
+  // Fetch on dependency changes
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    }
     fetchForms(currentPage, perPage, searchKeyword, selectedCategory);
   }, [currentPage, searchKeyword, selectedCategory]);
 
   // Handle search
   const handleSearch = (keyword: string) => {
+    if (keyword === searchKeyword) return;
     setSearchKeyword(keyword);
-    setCurrentPage(1); // Reset to first page when searching
+    if (currentPage !== 1) setCurrentPage(1);
   };
 
   // Handle category change
   const handleCategoryChange = (category: string) => {
+    if (category === selectedCategory) return;
     setSelectedCategory(category);
-    setCurrentPage(1); // Reset to first page when changing category
+    if (currentPage !== 1) setCurrentPage(1);
   };
 
   // Handle page change
   const handlePageChange = (page: number) => {
+    if (page === currentPage) return;
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleEditForm = (formId: number) => {
